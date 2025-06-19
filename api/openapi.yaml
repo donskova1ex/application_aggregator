@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  description: This is a sample some LoanApplication aggregator
+  title: Swagger loan application aggregator service - OpenAPI 3.0
+  version: 1.0.0
+servers:
+- url: https://localhost:8081/api/v1
+tags:
+- description: post loan application
+  name: LoanApplication
+paths:
+  /loan_application:
+    post:
+      description: adding new client application
+      operationId: LoanApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplication'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanApplication'
+          description: successful operation
+        "400":
+          description: Invalid data
+      summary: post client loan application from site
+      tags:
+      - LoanApplication
+components:
+  schemas:
+    LoanApplication:
+      example:
+        site: mysite.com
+        Phone: "79994000101"
+        Amount: 10000
+      properties:
+        Amount:
+          example: 10000
+          type: integer
+        Phone:
+          example: "79994000101"
+          type: string
+        site:
+          example: mysite.com
+          type: string
+      type: object
