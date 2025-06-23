@@ -48,3 +48,22 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  api-up:
+    env_file:
+      - .env.dev
+    environment:
+      - API_CONTAINER_NAME=${API_NAME}
+      - API_PORT=${API_PORT}
+      - POSTGRES_DSN=${POSTGRES_DSN}
+    container_name: application_aggregator.api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: donskova1ex/api:latest
+    ports:
+      - 8080:${API_PORT}
+    volumes:
+      - .env.dev:/app/.env.dev
+    working_dir: /app
+    depends_on:
+      - migrations-up
