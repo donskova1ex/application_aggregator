@@ -17,7 +17,7 @@ services:
     volumes:
       - .:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U dev -d dev'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U dev -d application_aggregator'"]
       interval: 10s
       timeout: 60s
       retries: 5
