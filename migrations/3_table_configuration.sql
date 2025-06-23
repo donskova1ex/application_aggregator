@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS configuration (
     max_loan_amount DECIMAL(18, 2) DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NULL,
+    is_avaliable BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (organization_id)
 );
 -- +goose StatementEnd
