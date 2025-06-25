@@ -1,5 +1,80 @@
 package repositories
 
-func (repo *PostgresRepository) CreateOrganization() {
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"fmt"
+	"github.com/donskova1ex/application_aggregator/internal/domain"
+	"github.com/google/uuid"
+)
 
+func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error) {
+	query := `INSERT INTO organizations(uuid, name) VALUES ($1, $2) ON CONFLICT ON CONSTRAINT organizations_name_key DO NOTHING RETURNING uuid`
+
+	newUUID := uuid.NewString()
+	row := repo.db.QueryRowContext(ctx, query, newUUID, organization.Name)
+	if err := row.Err(); err != nil {
+		return nil, fmt.Errorf("error creating organization: %w", err)
+	}
+	var id uint32
+	if err := row.Scan(&id); err != nil {
+		return nil, fmt.Errorf("error scanning organization by uuid: %w", err)
+	}
+
+	newOrganization := &domain.Organization{
+		Uuid: newUUID,
+		Name: organization.Name,
+	}
+	return newOrganization, nil
+}
+
+func (repo *PostgresRepository) GetOrganizationByUUID(ctx context.Context, uuid string) (*domain.Organization, error) {
+	query := `SELECT uuid, name FROM organizations WHERE uuid = $1`
+
+	organization := &domain.Organization{}
+
+	err := repo.db.GetContext(ctx, organization, query, uuid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error getting organization by uuid: %w", err)
+	}
+
+	return organization, nil
+}
+
+func (repo *PostgresRepository) DeleteOrganizationByUUID(ctx context.Context, uuid string) error {
+	querty := `DELETE FROM organizations WHERE uuid = $1`
+
+	_, err := repo.db.ExecContext(ctx, querty, uuid)
+	if err != nil {
+		return fmt.Errorf("there is no organization with this uuid: %w", err)
+	}
+
+	return nil
+}
+func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid string, organization *domain.Organization) (*domain.Organization, error) {
+	query := `UPDATE organizations SET name = $1 WHERE uuid = $2`
+	_, err := repo.db.ExecContext(ctx, query, organization.Name, uuid)
+	if err != nil {
+		return nil, fmt.Errorf("there is no organization with this uuid: %w", err)
+	}
+
+	return organization, nil
+}
+func (repo *PostgresRepository) GetOrganizations(ctx context.Context) ([]*domain.Organization, error) {
+	orgalizations := []*domain.Organization{}
+
+	query := `SELECT uuid, name FROM organizations`
+	err := repo.db.SelectContext(ctx, &orgalizations, query)
+	if errors.Is(err, sql.ErrNoRows) {
+		return orgalizations, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error getting organizations: %w", err)
+	}
+
+	return orgalizations, nil
 }
