@@ -7,16 +7,16 @@ info:
 servers:
   - url: https://localhost:8081/api/v1
 tags:
-  - name: LoanApplication
-    description: post loan application
+  - name: loan application aggregator
+    description: API for aggregating and redirecting loan application
 paths:
-  /loan_application:
+  /loan_applications:
     post:
       tags:
-        - LoanApplication
-      summary: post client loan application from site
+        -   loan_applications
+      summary: create client loan application from site
       description: adding new client application
-      operationId: LoanApplication
+      operationId: CreateLoanApplication
       requestBody:
         required: true
         content:
@@ -31,18 +31,454 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoanApplication'
         '400':
+          description: invalid data
+    get:
+      tags:
+        - loan_applications
+      summary: get all loan applications
+      description: get all loan applications
+      operationId: LoanApplications
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanApplication'
+        '500':
+          description: internal server error
+  /loan_applications/{id}:
+    get:
+      tags:
+        - loan_applications
+      summary: get loan application's data
+      description: get loan application data by ID
+      operationId: GetLoanApplicationById
+      parameters:
+        - name: id
+          in: path
+          description: config ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: config was found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanApplication'
+        '404':
+          description: config not found
+    patch:
+      tags:
+        - loan_applications
+      summary: update loan application information
+      description: Updates loan application data by id
+      operationId: EditLoanApplicaitionById
+      parameters:
+        - name: id
+          in: path
+          description: Loan application ID for update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: loan application object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplication'
+      responses:
+        '200':
+          description: loan application updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanApplication'
+        '400':
+          description: invalid ID or loan application data supplied
+        '404':
+          description: loan application not found
+        '500':
+          description: internal server error
+    delete:
+      tags:
+        - loan_applications
+      summary: delete loan application
+      description: Delete loan application by ID
+      operationId: DeleteLoanApplicationById
+      parameters:
+        - name: id
+          in: path
+          description: Loan application ID for delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: loan application deleted successfully
+        '404':
+          description: loan application not found
+        '500':
+          description: Internal server error
+  /organizations:
+    post:
+      tags:
+        - organizations
+      summary: create new organization
+      description: adding new organization
+      operationId: CreateOrganizationById
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: invalid data
+    get:
+      tags:
+        - organizations
+      summary: get all organizations
+      description: get all organizations
+      operationId: Organizations
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+        '500':
+          description: internal server error
+  /organizations/{id}:
+    patch:
+      tags:
+        - organizations
+      summary: update organization information
+      description: Updates organization data by id
+      operationId: EditOrganizationById
+      parameters:
+        - name: id
+          in: path
+          description: ID organization for update
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        description: organization object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '200':
+          description: organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: invalid ID or organization data supplied
+        '404':
+          description: organization not found
+        '500':
+          description: internal server error
+    delete:
+      tags:
+        - organizations
+      summary: delete organization
+      description: Delete organization by ID
+      operationId: DeleteOrganizationById
+      parameters:
+        - name: id
+          in: path
+          description: ID organization for delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: organization deleted successfully
+        '400':
+          description: invalid organization ID
+        '404':
+          description: organization not found
+    get:
+      tags:
+        - organizations
+      summary: get organization data
+      description: get organization data by ID
+      operationId: GetOrganizationById
+      parameters:
+        - name: id
+          in: path
+          description: ID organization for delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: organization was found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '404':
+          description: organization not found
+  /configs:
+    get:
+      tags:
+        - config
+      summary: get configs
+      description: get all configs
+      operationId: GetConfigs
+      responses:
+        '200':
+          description: configs was getting successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Config'
+        '404':
+          description: configs not found
+        '500':
+          description: internal server error
+    post:
+      tags:
+        - config
+      summary: create new config
+      description: adding new config
+      operationId: CreateOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
           description: Invalid data
+  /configs/{id}:
+    get:
+      tags:
+        - config
+      summary: get config data
+      description: get config data by config ID
+      operationId: GetConfigById
+      parameters:
+        - name: id
+          in: path
+          description: config ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: config was found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '404':
+          description: config not found
+        '500':
+          description: internal server error
+    delete:
+      tags:
+        - config
+      summary: Delete config data
+      description: Delete config data by config ID
+      operationId: DeleteConfigById
+      parameters:
+        - name: id
+          in: path
+          description: config ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: config deleted successfully
+        '404':
+          description: config not found
+        '500':
+          description: internal sever error
+    patch:
+      tags:
+        - config
+      summary: update config information
+      description: Updates config data by id
+      operationId: EditConfigById
+      parameters:
+        - name: id
+          in: path
+          description: ID config for update
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        description: config object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses:
+        '200':
+          description: config updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
+          description: invalid ID or config data supplied
+        '404':
+          description: config not found
+        '500':
+          description: internal server error
+  /configs/organizations/{id}:
+    get:
+      tags:
+        - config
+      summary: get organization's config data
+      description: get config data by organization ID
+      operationId: GetConfigByOrganizationId
+      parameters:
+        - name: id
+          in: path
+          description: organization ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: config was found successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '404':
+          description: config not found
+    delete:
+      tags:
+        - config
+      summary: Delete organization's config data
+      description: Delete config data by organization ID
+      operationId: DeleteConfigByOrganizationId
+      parameters:
+        - name: id
+          in: path
+          description: config ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: config deleted successfully
+        '404':
+          description: config not found
+        '500':
+          description: internal server error
+    patch:
+      tags:
+        - config
+      summary: update organization's config information
+      description: Updates config data by organization id
+      operationId: EditConfigByOrganizationId
+      parameters:
+        - name: id
+          in: path
+          description: ID organization for update data
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        description: config object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses:
+        '200':
+          description: config updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
+          description: invalid organization ID or config data supplied
+        '404':
+          description: config not found
+        '500':
+          description: internal server error
 components:
   schemas:
     LoanApplication:
       type: object
       properties:
-        Amount:
+        value:
           type: integer
           example: 10000
-        Phone:
+        phone:
           type: string
           example: +79994000101
-        site:
+        incoming_organization_id:
+          type: integer
+          example: 1
+    Organization:
+      type: object
+      properties:
+        name:
           type: string
-          example: mysite.com
+          example: kassa_one
+    Config:
+      type: object
+      properties:
+        organization_id:
+          type: integer
+          example: 1
+        max_loan_amount:
+          type: integer
+          example: 20000
+        new_client:
+          type: boolean
+          example: true
+        loan_available:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          example: 2025-06-24T07:48:39.676668+05:00
+        updated_at:
+          type: string
+          example: null
+        is_avaliable:
+          type: boolean
+          example: true

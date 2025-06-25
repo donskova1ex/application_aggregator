@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS loan_applications (
     id SERIAL PRIMARY KEY,
     phone_number VARCHAR(36) NOT NULL,
     value DECIMAL(18,2) NOT NULL CONSTRAINT chk_positive_value CHECK (value >= 0),
-    incoming_organization_id INTEGER,
-    issue_organization_id INTEGER,
+    incoming_organization_id INTEGER REFERENCES organizations(id),
+    issue_organization_id INTEGER REFERENCES organizations(id),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NULL
 );

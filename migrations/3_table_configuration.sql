@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS configuration (
     id SERIAL PRIMARY KEY,
-    organization_id SERIAL REFERENCES organizations(id),
+    organization_id SERIAL REFERENCES organizations(id) ON DELETE CASCADE,
     new_client BOOLEAN DEFAULT FALSE,
     loan_available BOOLEAN DEFAULT FALSE,
     max_loan_amount DECIMAL(18, 2) DEFAULT NULL,

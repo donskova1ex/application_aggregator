@@ -15,11 +15,11 @@ package openapi
 
 type LoanApplication struct {
 
-	Amount int32 `json:"Amount,omitempty"`
+	Value int32 `json:"value,omitempty"`
 
-	Phone string `json:"Phone,omitempty"`
+	Phone string `json:"phone,omitempty"`
 
-	Site string `json:"site,omitempty"`
+	IncomingOrganizationId int32 `json:"incoming_organization_id,omitempty"`
 }
 
 // AssertLoanApplicationRequired checks if the required fields are not zero-ed

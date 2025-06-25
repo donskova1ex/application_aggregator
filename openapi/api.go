@@ -17,18 +17,78 @@ import (
 
 
 
-// LoanApplicationAPIRouter defines the required methods for binding the api requests to a responses for the LoanApplicationAPI
-// The LoanApplicationAPIRouter implementation should parse necessary information from the http request,
-// pass the data to a LoanApplicationAPIServicer to perform the required actions, then write the service results to the http response.
-type LoanApplicationAPIRouter interface { 
-	LoanApplication(http.ResponseWriter, *http.Request)
+// ConfigAPIRouter defines the required methods for binding the api requests to a responses for the ConfigAPI
+// The ConfigAPIRouter implementation should parse necessary information from the http request,
+// pass the data to a ConfigAPIServicer to perform the required actions, then write the service results to the http response.
+type ConfigAPIRouter interface { 
+	GetConfigs(http.ResponseWriter, *http.Request)
+	CreateOrganization(http.ResponseWriter, *http.Request)
+	GetConfigById(http.ResponseWriter, *http.Request)
+	DeleteConfigById(http.ResponseWriter, *http.Request)
+	EditConfigById(http.ResponseWriter, *http.Request)
+	GetConfigByOrganizationId(http.ResponseWriter, *http.Request)
+	DeleteConfigByOrganizationId(http.ResponseWriter, *http.Request)
+	EditConfigByOrganizationId(http.ResponseWriter, *http.Request)
+}
+// LoanApplicationsAPIRouter defines the required methods for binding the api requests to a responses for the LoanApplicationsAPI
+// The LoanApplicationsAPIRouter implementation should parse necessary information from the http request,
+// pass the data to a LoanApplicationsAPIServicer to perform the required actions, then write the service results to the http response.
+type LoanApplicationsAPIRouter interface { 
+	LoanApplications(http.ResponseWriter, *http.Request)
+	CreateLoanApplication(http.ResponseWriter, *http.Request)
+	GetLoanApplicationById(http.ResponseWriter, *http.Request)
+	DeleteLoanApplicationById(http.ResponseWriter, *http.Request)
+	EditLoanApplicaitionById(http.ResponseWriter, *http.Request)
+}
+// OrganizationsAPIRouter defines the required methods for binding the api requests to a responses for the OrganizationsAPI
+// The OrganizationsAPIRouter implementation should parse necessary information from the http request,
+// pass the data to a OrganizationsAPIServicer to perform the required actions, then write the service results to the http response.
+type OrganizationsAPIRouter interface { 
+	Organizations(http.ResponseWriter, *http.Request)
+	CreateOrganizationById(http.ResponseWriter, *http.Request)
+	GetOrganizationById(http.ResponseWriter, *http.Request)
+	DeleteOrganizationById(http.ResponseWriter, *http.Request)
+	EditOrganizationById(http.ResponseWriter, *http.Request)
 }
 
 
-// LoanApplicationAPIServicer defines the api actions for the LoanApplicationAPI service
+// ConfigAPIServicer defines the api actions for the ConfigAPI service
 // This interface intended to stay up to date with the openapi yaml used to generate it,
 // while the service implementation can be ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type LoanApplicationAPIServicer interface { 
-	LoanApplication(context.Context, LoanApplication) (ImplResponse, error)
+type ConfigAPIServicer interface { 
+	GetConfigs(context.Context) (ImplResponse, error)
+	CreateOrganization(context.Context, Config) (ImplResponse, error)
+	GetConfigById(context.Context, int32) (ImplResponse, error)
+	DeleteConfigById(context.Context, int32) (ImplResponse, error)
+	EditConfigById(context.Context, int32, Config) (ImplResponse, error)
+	GetConfigByOrganizationId(context.Context, int32) (ImplResponse, error)
+	DeleteConfigByOrganizationId(context.Context, int32) (ImplResponse, error)
+	EditConfigByOrganizationId(context.Context, int32, Config) (ImplResponse, error)
+}
+
+
+// LoanApplicationsAPIServicer defines the api actions for the LoanApplicationsAPI service
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can be ignored with the .openapi-generator-ignore file
+// and updated with the logic required for the API.
+type LoanApplicationsAPIServicer interface { 
+	LoanApplications(context.Context) (ImplResponse, error)
+	CreateLoanApplication(context.Context, LoanApplication) (ImplResponse, error)
+	GetLoanApplicationById(context.Context, int32) (ImplResponse, error)
+	DeleteLoanApplicationById(context.Context, int32) (ImplResponse, error)
+	EditLoanApplicaitionById(context.Context, int32, LoanApplication) (ImplResponse, error)
+}
+
+
+// OrganizationsAPIServicer defines the api actions for the OrganizationsAPI service
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can be ignored with the .openapi-generator-ignore file
+// and updated with the logic required for the API.
+type OrganizationsAPIServicer interface { 
+	Organizations(context.Context) (ImplResponse, error)
+	CreateOrganizationById(context.Context, Organization) (ImplResponse, error)
+	GetOrganizationById(context.Context, int32) (ImplResponse, error)
+	DeleteOrganizationById(context.Context, int32) (ImplResponse, error)
+	EditOrganizationById(context.Context, int32, Organization) (ImplResponse, error)
 }

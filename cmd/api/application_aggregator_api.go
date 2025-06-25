@@ -19,10 +19,16 @@ import (
 func main() {
 	log.Printf("Server started")
 
-	LoanApplicationAPIService := openapi.NewLoanApplicationAPIService()
-	LoanApplicationAPIController := openapi.NewLoanApplicationAPIController(LoanApplicationAPIService)
+	ConfigAPIService := openapi.NewConfigAPIService()
+	ConfigAPIController := openapi.NewConfigAPIController(ConfigAPIService)
 
-	router := openapi.NewRouter(LoanApplicationAPIController)
+	LoanApplicationsAPIService := openapi.NewLoanApplicationsAPIService()
+	LoanApplicationsAPIController := openapi.NewLoanApplicationsAPIController(LoanApplicationsAPIService)
+
+	OrganizationsAPIService := openapi.NewOrganizationsAPIService()
+	OrganizationsAPIController := openapi.NewOrganizationsAPIController(OrganizationsAPIService)
+
+	router := openapi.NewRouter(ConfigAPIController, LoanApplicationsAPIController, OrganizationsAPIController)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
