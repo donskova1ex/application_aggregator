@@ -20,7 +20,7 @@ import (
 
 // OrganizationsAPIController binds http requests to an api service and writes the service results to the http response
 type OrganizationsAPIController struct {
-	service      OrganizationsAPIServicer
+	service OrganizationsAPIServicer
 	errorHandler ErrorHandler
 }
 
@@ -56,10 +56,10 @@ func (c *OrganizationsAPIController) Routes() Routes {
 			"/api/v1/organizations",
 			c.Organizations,
 		},
-		"CreateOrganizationByUUID": Route{
+		"CreateOrganization": Route{
 			strings.ToUpper("Post"),
 			"/api/v1/organizations",
-			c.CreateOrganizationByUUID,
+			c.CreateOrganization,
 		},
 		"GetOrganizationByUUID": Route{
 			strings.ToUpper("Get"),
@@ -91,8 +91,8 @@ func (c *OrganizationsAPIController) Organizations(w http.ResponseWriter, r *htt
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// CreateOrganizationByUUID - create new organization
-func (c *OrganizationsAPIController) CreateOrganizationByUUID(w http.ResponseWriter, r *http.Request) {
+// CreateOrganization - create new organization
+func (c *OrganizationsAPIController) CreateOrganization(w http.ResponseWriter, r *http.Request) {
 	var organizationParam Organization
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
@@ -108,7 +108,7 @@ func (c *OrganizationsAPIController) CreateOrganizationByUUID(w http.ResponseWri
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.CreateOrganizationByUUID(r.Context(), organizationParam)
+	result, err := c.service.CreateOrganization(r.Context(), organizationParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

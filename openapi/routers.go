@@ -11,8 +11,8 @@
 package openapi
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
 // A Route defines the parameters for an api endpoint

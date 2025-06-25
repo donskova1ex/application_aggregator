@@ -12,8 +12,8 @@ package openapi
 
 import (
 	"context"
-	"errors"
 	"net/http"
+	"errors"
 )
 
 // OrganizationsAPIService is a service that implements the logic for the OrganizationsAPIServicer
@@ -41,9 +41,9 @@ func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplRespon
 	return Response(http.StatusNotImplemented, nil), errors.New("Organizations method not implemented")
 }
 
-// CreateOrganizationByUUID - create new organization
-func (s *OrganizationsAPIService) CreateOrganizationByUUID(ctx context.Context, organization Organization) (ImplResponse, error) {
-	// TODO - update CreateOrganizationByUUID with the required logic for this service method.
+// CreateOrganization - create new organization
+func (s *OrganizationsAPIService) CreateOrganization(ctx context.Context, organization Organization) (ImplResponse, error) {
+	// TODO - update CreateOrganization with the required logic for this service method.
 	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(201, Organization{}) or use other options such as http.Ok ...
@@ -52,7 +52,7 @@ func (s *OrganizationsAPIService) CreateOrganizationByUUID(ctx context.Context, 
 	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	// return Response(400, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganizationByUUID method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganization method not implemented")
 }
 
 // GetOrganizationByUUID - get organization data

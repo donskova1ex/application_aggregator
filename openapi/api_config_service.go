@@ -12,8 +12,8 @@ package openapi
 
 import (
 	"context"
-	"errors"
 	"net/http"
+	"errors"
 )
 
 // ConfigAPIService is a service that implements the logic for the ConfigAPIServicer
@@ -44,9 +44,9 @@ func (s *ConfigAPIService) GetConfigs(ctx context.Context) (ImplResponse, error)
 	return Response(http.StatusNotImplemented, nil), errors.New("GetConfigs method not implemented")
 }
 
-// CreateOrganization - create new config
-func (s *ConfigAPIService) CreateOrganization(ctx context.Context, config Config) (ImplResponse, error) {
-	// TODO - update CreateOrganization with the required logic for this service method.
+// CreateConfig - create new config
+func (s *ConfigAPIService) CreateConfig(ctx context.Context, config Config) (ImplResponse, error) {
+	// TODO - update CreateConfig with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(201, Config{}) or use other options such as http.Ok ...
@@ -55,7 +55,7 @@ func (s *ConfigAPIService) CreateOrganization(ctx context.Context, config Config
 	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	// return Response(400, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganization method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("CreateConfig method not implemented")
 }
 
 // GetConfigByUUID - get config data

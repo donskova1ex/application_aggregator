@@ -12,8 +12,8 @@ package openapi
 
 import (
 	"context"
-	"errors"
 	"net/http"
+	"errors"
 )
 
 // LoanApplicationsAPIService is a service that implements the logic for the LoanApplicationsAPIServicer
@@ -86,9 +86,9 @@ func (s *LoanApplicationsAPIService) DeleteLoanApplicationByUUID(ctx context.Con
 	return Response(http.StatusNotImplemented, nil), errors.New("DeleteLoanApplicationByUUID method not implemented")
 }
 
-// EditLoanApplicaitionByUUID - update loan application information
-func (s *LoanApplicationsAPIService) EditLoanApplicaitionByUUID(ctx context.Context, uuid string, loanApplication LoanApplication) (ImplResponse, error) {
-	// TODO - update EditLoanApplicaitionByUUID with the required logic for this service method.
+// EditLoanApplicationByUUID - update loan application information
+func (s *LoanApplicationsAPIService) EditLoanApplicationByUUID(ctx context.Context, uuid string, loanApplication LoanApplication) (ImplResponse, error) {
+	// TODO - update EditLoanApplicationByUUID with the required logic for this service method.
 	// Add api_loan_applications_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, LoanApplication{}) or use other options such as http.Ok ...
@@ -103,5 +103,5 @@ func (s *LoanApplicationsAPIService) EditLoanApplicaitionByUUID(ctx context.Cont
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("EditLoanApplicaitionByUUID method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("EditLoanApplicationByUUID method not implemented")
 }

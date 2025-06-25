@@ -77,7 +77,7 @@ paths:
         - loan_applications
       summary: update loan application information
       description: Updates loan application data by uuid
-      operationId: EditLoanApplicaitionByUUID
+      operationId: EditLoanApplicationByUUID
       parameters:
         - name: uuid
           in: path
@@ -131,7 +131,7 @@ paths:
         - organizations
       summary: create new organization
       description: adding new organization
-      operationId: CreateOrganizationByUUID
+      operationId: CreateOrganization
       requestBody:
         required: true
         content:
@@ -266,7 +266,7 @@ paths:
         - config
       summary: create new config
       description: adding new config
-      operationId: CreateOrganization
+      operationId: CreateConfig
       requestBody:
         required: true
         content:

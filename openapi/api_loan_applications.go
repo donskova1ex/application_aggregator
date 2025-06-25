@@ -20,7 +20,7 @@ import (
 
 // LoanApplicationsAPIController binds http requests to an api service and writes the service results to the http response
 type LoanApplicationsAPIController struct {
-	service      LoanApplicationsAPIServicer
+	service LoanApplicationsAPIServicer
 	errorHandler ErrorHandler
 }
 
@@ -71,10 +71,10 @@ func (c *LoanApplicationsAPIController) Routes() Routes {
 			"/api/v1/loan_applications/{uuid}",
 			c.DeleteLoanApplicationByUUID,
 		},
-		"EditLoanApplicaitionByUUID": Route{
+		"EditLoanApplicationByUUID": Route{
 			strings.ToUpper("Patch"),
 			"/api/v1/loan_applications/{uuid}",
-			c.EditLoanApplicaitionByUUID,
+			c.EditLoanApplicationByUUID,
 		},
 	}
 }
@@ -154,8 +154,8 @@ func (c *LoanApplicationsAPIController) DeleteLoanApplicationByUUID(w http.Respo
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// EditLoanApplicaitionByUUID - update loan application information
-func (c *LoanApplicationsAPIController) EditLoanApplicaitionByUUID(w http.ResponseWriter, r *http.Request) {
+// EditLoanApplicationByUUID - update loan application information
+func (c *LoanApplicationsAPIController) EditLoanApplicationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	uuidParam := params["uuid"]
 	if uuidParam == "" {
@@ -177,7 +177,7 @@ func (c *LoanApplicationsAPIController) EditLoanApplicaitionByUUID(w http.Respon
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.EditLoanApplicaitionByUUID(r.Context(), uuidParam, loanApplicationParam)
+	result, err := c.service.EditLoanApplicationByUUID(r.Context(), uuidParam, loanApplicationParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

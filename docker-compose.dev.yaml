@@ -24,7 +24,8 @@ services:
       start_period: 30s
   migrations-up:
     container_name: application_aggregator.migrations-up
-
+    env_file:
+      - .env.dev
     environment:
       - GOOSE_DRIVER=${GOOSE_DRIVER}
       - GOOSE_DBSTRING=${GOOSE_DBSTRING}
@@ -37,6 +38,8 @@ services:
         condition: service_healthy
   migrations-down:
     container_name: application_aggregator.migrations-down
+    env_file:
+      - .env.dev
     environment:
       - GOOSE_DRIVER=${GOOSE_DRIVER}
       - GOOSE_DBSTRING=${GOOSE_DBSTRING}

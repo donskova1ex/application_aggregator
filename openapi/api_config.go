@@ -20,7 +20,7 @@ import (
 
 // ConfigAPIController binds http requests to an api service and writes the service results to the http response
 type ConfigAPIController struct {
-	service      ConfigAPIServicer
+	service ConfigAPIServicer
 	errorHandler ErrorHandler
 }
 
@@ -56,10 +56,10 @@ func (c *ConfigAPIController) Routes() Routes {
 			"/api/v1/configs",
 			c.GetConfigs,
 		},
-		"CreateOrganization": Route{
+		"CreateConfig": Route{
 			strings.ToUpper("Post"),
 			"/api/v1/configs",
-			c.CreateOrganization,
+			c.CreateConfig,
 		},
 		"GetConfigByUUID": Route{
 			strings.ToUpper("Get"),
@@ -106,8 +106,8 @@ func (c *ConfigAPIController) GetConfigs(w http.ResponseWriter, r *http.Request)
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// CreateOrganization - create new config
-func (c *ConfigAPIController) CreateOrganization(w http.ResponseWriter, r *http.Request) {
+// CreateConfig - create new config
+func (c *ConfigAPIController) CreateConfig(w http.ResponseWriter, r *http.Request) {
 	var configParam Config
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
@@ -123,7 +123,7 @@ func (c *ConfigAPIController) CreateOrganization(w http.ResponseWriter, r *http.
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.CreateOrganization(r.Context(), configParam)
+	result, err := c.service.CreateConfig(r.Context(), configParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
