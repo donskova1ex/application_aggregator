@@ -2,6 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS configuration (
     id SERIAL PRIMARY KEY,
+    uuid VARCHAR(36) unique,
     organization_id SERIAL REFERENCES organizations(id) ON DELETE CASCADE,
     new_client BOOLEAN DEFAULT FALSE,
     loan_available BOOLEAN DEFAULT FALSE,

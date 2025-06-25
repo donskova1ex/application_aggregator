@@ -23,12 +23,12 @@ import (
 type ConfigAPIRouter interface { 
 	GetConfigs(http.ResponseWriter, *http.Request)
 	CreateOrganization(http.ResponseWriter, *http.Request)
-	GetConfigById(http.ResponseWriter, *http.Request)
-	DeleteConfigById(http.ResponseWriter, *http.Request)
-	EditConfigById(http.ResponseWriter, *http.Request)
-	GetConfigByOrganizationId(http.ResponseWriter, *http.Request)
-	DeleteConfigByOrganizationId(http.ResponseWriter, *http.Request)
-	EditConfigByOrganizationId(http.ResponseWriter, *http.Request)
+	GetConfigByUUID(http.ResponseWriter, *http.Request)
+	DeleteConfigByUUID(http.ResponseWriter, *http.Request)
+	EditConfigByUUID(http.ResponseWriter, *http.Request)
+	GetConfigByOrganizationUUID(http.ResponseWriter, *http.Request)
+	DeleteConfigByOrganizationUUID(http.ResponseWriter, *http.Request)
+	EditConfigByOrganizationUUID(http.ResponseWriter, *http.Request)
 }
 // LoanApplicationsAPIRouter defines the required methods for binding the api requests to a responses for the LoanApplicationsAPI
 // The LoanApplicationsAPIRouter implementation should parse necessary information from the http request,
@@ -36,19 +36,19 @@ type ConfigAPIRouter interface {
 type LoanApplicationsAPIRouter interface { 
 	LoanApplications(http.ResponseWriter, *http.Request)
 	CreateLoanApplication(http.ResponseWriter, *http.Request)
-	GetLoanApplicationById(http.ResponseWriter, *http.Request)
-	DeleteLoanApplicationById(http.ResponseWriter, *http.Request)
-	EditLoanApplicaitionById(http.ResponseWriter, *http.Request)
+	GetLoanApplicationByUUID(http.ResponseWriter, *http.Request)
+	DeleteLoanApplicationByUUID(http.ResponseWriter, *http.Request)
+	EditLoanApplicaitionByUUID(http.ResponseWriter, *http.Request)
 }
 // OrganizationsAPIRouter defines the required methods for binding the api requests to a responses for the OrganizationsAPI
 // The OrganizationsAPIRouter implementation should parse necessary information from the http request,
 // pass the data to a OrganizationsAPIServicer to perform the required actions, then write the service results to the http response.
 type OrganizationsAPIRouter interface { 
 	Organizations(http.ResponseWriter, *http.Request)
-	CreateOrganizationById(http.ResponseWriter, *http.Request)
-	GetOrganizationById(http.ResponseWriter, *http.Request)
-	DeleteOrganizationById(http.ResponseWriter, *http.Request)
-	EditOrganizationById(http.ResponseWriter, *http.Request)
+	CreateOrganizationByUUID(http.ResponseWriter, *http.Request)
+	GetOrganizationByUUID(http.ResponseWriter, *http.Request)
+	DeleteOrganizationByUUID(http.ResponseWriter, *http.Request)
+	EditOrganizationByUUID(http.ResponseWriter, *http.Request)
 }
 
 
@@ -59,12 +59,12 @@ type OrganizationsAPIRouter interface {
 type ConfigAPIServicer interface { 
 	GetConfigs(context.Context) (ImplResponse, error)
 	CreateOrganization(context.Context, Config) (ImplResponse, error)
-	GetConfigById(context.Context, int32) (ImplResponse, error)
-	DeleteConfigById(context.Context, int32) (ImplResponse, error)
-	EditConfigById(context.Context, int32, Config) (ImplResponse, error)
-	GetConfigByOrganizationId(context.Context, int32) (ImplResponse, error)
-	DeleteConfigByOrganizationId(context.Context, int32) (ImplResponse, error)
-	EditConfigByOrganizationId(context.Context, int32, Config) (ImplResponse, error)
+	GetConfigByUUID(context.Context, string) (ImplResponse, error)
+	DeleteConfigByUUID(context.Context, string) (ImplResponse, error)
+	EditConfigByUUID(context.Context, string, Config) (ImplResponse, error)
+	GetConfigByOrganizationUUID(context.Context, string) (ImplResponse, error)
+	DeleteConfigByOrganizationUUID(context.Context, string) (ImplResponse, error)
+	EditConfigByOrganizationUUID(context.Context, string, Config) (ImplResponse, error)
 }
 
 
@@ -75,9 +75,9 @@ type ConfigAPIServicer interface {
 type LoanApplicationsAPIServicer interface { 
 	LoanApplications(context.Context) (ImplResponse, error)
 	CreateLoanApplication(context.Context, LoanApplication) (ImplResponse, error)
-	GetLoanApplicationById(context.Context, int32) (ImplResponse, error)
-	DeleteLoanApplicationById(context.Context, int32) (ImplResponse, error)
-	EditLoanApplicaitionById(context.Context, int32, LoanApplication) (ImplResponse, error)
+	GetLoanApplicationByUUID(context.Context, string) (ImplResponse, error)
+	DeleteLoanApplicationByUUID(context.Context, string) (ImplResponse, error)
+	EditLoanApplicaitionByUUID(context.Context, string, LoanApplication) (ImplResponse, error)
 }
 
 
@@ -87,8 +87,8 @@ type LoanApplicationsAPIServicer interface {
 // and updated with the logic required for the API.
 type OrganizationsAPIServicer interface { 
 	Organizations(context.Context) (ImplResponse, error)
-	CreateOrganizationById(context.Context, Organization) (ImplResponse, error)
-	GetOrganizationById(context.Context, int32) (ImplResponse, error)
-	DeleteOrganizationById(context.Context, int32) (ImplResponse, error)
-	EditOrganizationById(context.Context, int32, Organization) (ImplResponse, error)
+	CreateOrganizationByUUID(context.Context, Organization) (ImplResponse, error)
+	GetOrganizationByUUID(context.Context, string) (ImplResponse, error)
+	DeleteOrganizationByUUID(context.Context, string) (ImplResponse, error)
+	EditOrganizationByUUID(context.Context, string, Organization) (ImplResponse, error)
 }

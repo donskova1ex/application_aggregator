@@ -55,9 +55,9 @@ func (s *LoanApplicationsAPIService) CreateLoanApplication(ctx context.Context, 
 	return Response(http.StatusNotImplemented, nil), errors.New("CreateLoanApplication method not implemented")
 }
 
-// GetLoanApplicationById - get loan application&#39;s data
-func (s *LoanApplicationsAPIService) GetLoanApplicationById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update GetLoanApplicationById with the required logic for this service method.
+// GetLoanApplicationByUUID - get loan application&#39;s data
+func (s *LoanApplicationsAPIService) GetLoanApplicationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update GetLoanApplicationByUUID with the required logic for this service method.
 	// Add api_loan_applications_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, LoanApplication{}) or use other options such as http.Ok ...
@@ -66,12 +66,12 @@ func (s *LoanApplicationsAPIService) GetLoanApplicationById(ctx context.Context,
 	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	// return Response(404, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetLoanApplicationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("GetLoanApplicationByUUID method not implemented")
 }
 
-// DeleteLoanApplicationById - delete loan application
-func (s *LoanApplicationsAPIService) DeleteLoanApplicationById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update DeleteLoanApplicationById with the required logic for this service method.
+// DeleteLoanApplicationByUUID - delete loan application
+func (s *LoanApplicationsAPIService) DeleteLoanApplicationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update DeleteLoanApplicationByUUID with the required logic for this service method.
 	// Add api_loan_applications_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
@@ -83,12 +83,12 @@ func (s *LoanApplicationsAPIService) DeleteLoanApplicationById(ctx context.Conte
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("DeleteLoanApplicationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("DeleteLoanApplicationByUUID method not implemented")
 }
 
-// EditLoanApplicaitionById - update loan application information
-func (s *LoanApplicationsAPIService) EditLoanApplicaitionById(ctx context.Context, id int32, loanApplication LoanApplication) (ImplResponse, error) {
-	// TODO - update EditLoanApplicaitionById with the required logic for this service method.
+// EditLoanApplicaitionByUUID - update loan application information
+func (s *LoanApplicationsAPIService) EditLoanApplicaitionByUUID(ctx context.Context, uuid string, loanApplication LoanApplication) (ImplResponse, error) {
+	// TODO - update EditLoanApplicaitionByUUID with the required logic for this service method.
 	// Add api_loan_applications_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, LoanApplication{}) or use other options such as http.Ok ...
@@ -103,5 +103,5 @@ func (s *LoanApplicationsAPIService) EditLoanApplicaitionById(ctx context.Contex
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("EditLoanApplicaitionById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("EditLoanApplicaitionByUUID method not implemented")
 }

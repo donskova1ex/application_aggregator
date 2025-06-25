@@ -61,35 +61,35 @@ func (c *ConfigAPIController) Routes() Routes {
 			"/api/v1/configs",
 			c.CreateOrganization,
 		},
-		"GetConfigById": Route{
+		"GetConfigByUUID": Route{
 			strings.ToUpper("Get"),
-			"/api/v1/configs/{id}",
-			c.GetConfigById,
+			"/api/v1/configs/{uuid}",
+			c.GetConfigByUUID,
 		},
-		"DeleteConfigById": Route{
+		"DeleteConfigByUUID": Route{
 			strings.ToUpper("Delete"),
-			"/api/v1/configs/{id}",
-			c.DeleteConfigById,
+			"/api/v1/configs/{uuid}",
+			c.DeleteConfigByUUID,
 		},
-		"EditConfigById": Route{
+		"EditConfigByUUID": Route{
 			strings.ToUpper("Patch"),
-			"/api/v1/configs/{id}",
-			c.EditConfigById,
+			"/api/v1/configs/{uuid}",
+			c.EditConfigByUUID,
 		},
-		"GetConfigByOrganizationId": Route{
+		"GetConfigByOrganizationUUID": Route{
 			strings.ToUpper("Get"),
-			"/api/v1/configs/organizations/{id}",
-			c.GetConfigByOrganizationId,
+			"/api/v1/configs/organizations/{uuid}",
+			c.GetConfigByOrganizationUUID,
 		},
-		"DeleteConfigByOrganizationId": Route{
+		"DeleteConfigByOrganizationUUID": Route{
 			strings.ToUpper("Delete"),
-			"/api/v1/configs/organizations/{id}",
-			c.DeleteConfigByOrganizationId,
+			"/api/v1/configs/organizations/{uuid}",
+			c.DeleteConfigByOrganizationUUID,
 		},
-		"EditConfigByOrganizationId": Route{
+		"EditConfigByOrganizationUUID": Route{
 			strings.ToUpper("Patch"),
-			"/api/v1/configs/organizations/{id}",
-			c.EditConfigByOrganizationId,
+			"/api/v1/configs/organizations/{uuid}",
+			c.EditConfigByOrganizationUUID,
 		},
 	}
 }
@@ -133,18 +133,15 @@ func (c *ConfigAPIController) CreateOrganization(w http.ResponseWriter, r *http.
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// GetConfigById - get config data
-func (c *ConfigAPIController) GetConfigById(w http.ResponseWriter, r *http.Request) {
+// GetConfigByUUID - get config data
+func (c *ConfigAPIController) GetConfigByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.GetConfigById(r.Context(), idParam)
+	result, err := c.service.GetConfigByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -154,18 +151,15 @@ func (c *ConfigAPIController) GetConfigById(w http.ResponseWriter, r *http.Reque
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// DeleteConfigById - Delete config data
-func (c *ConfigAPIController) DeleteConfigById(w http.ResponseWriter, r *http.Request) {
+// DeleteConfigByUUID - Delete config data
+func (c *ConfigAPIController) DeleteConfigByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.DeleteConfigById(r.Context(), idParam)
+	result, err := c.service.DeleteConfigByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -175,15 +169,12 @@ func (c *ConfigAPIController) DeleteConfigById(w http.ResponseWriter, r *http.Re
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// EditConfigById - update config information
-func (c *ConfigAPIController) EditConfigById(w http.ResponseWriter, r *http.Request) {
+// EditConfigByUUID - update config information
+func (c *ConfigAPIController) EditConfigByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
 	var configParam Config
@@ -201,7 +192,7 @@ func (c *ConfigAPIController) EditConfigById(w http.ResponseWriter, r *http.Requ
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.EditConfigById(r.Context(), idParam, configParam)
+	result, err := c.service.EditConfigByUUID(r.Context(), uuidParam, configParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -211,18 +202,15 @@ func (c *ConfigAPIController) EditConfigById(w http.ResponseWriter, r *http.Requ
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// GetConfigByOrganizationId - get organization's config data
-func (c *ConfigAPIController) GetConfigByOrganizationId(w http.ResponseWriter, r *http.Request) {
+// GetConfigByOrganizationUUID - get organization's config data
+func (c *ConfigAPIController) GetConfigByOrganizationUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.GetConfigByOrganizationId(r.Context(), idParam)
+	result, err := c.service.GetConfigByOrganizationUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -232,18 +220,15 @@ func (c *ConfigAPIController) GetConfigByOrganizationId(w http.ResponseWriter, r
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// DeleteConfigByOrganizationId - Delete organization's config data
-func (c *ConfigAPIController) DeleteConfigByOrganizationId(w http.ResponseWriter, r *http.Request) {
+// DeleteConfigByOrganizationUUID - Delete organization's config data
+func (c *ConfigAPIController) DeleteConfigByOrganizationUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.DeleteConfigByOrganizationId(r.Context(), idParam)
+	result, err := c.service.DeleteConfigByOrganizationUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -253,15 +238,12 @@ func (c *ConfigAPIController) DeleteConfigByOrganizationId(w http.ResponseWriter
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// EditConfigByOrganizationId - update organization's config information
-func (c *ConfigAPIController) EditConfigByOrganizationId(w http.ResponseWriter, r *http.Request) {
+// EditConfigByOrganizationUUID - update organization's config information
+func (c *ConfigAPIController) EditConfigByOrganizationUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
 	var configParam Config
@@ -279,7 +261,7 @@ func (c *ConfigAPIController) EditConfigByOrganizationId(w http.ResponseWriter, 
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.EditConfigByOrganizationId(r.Context(), idParam, configParam)
+	result, err := c.service.EditConfigByOrganizationUUID(r.Context(), uuidParam, configParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

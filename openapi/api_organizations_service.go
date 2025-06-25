@@ -41,9 +41,9 @@ func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplRespon
 	return Response(http.StatusNotImplemented, nil), errors.New("Organizations method not implemented")
 }
 
-// CreateOrganizationById - create new organization
-func (s *OrganizationsAPIService) CreateOrganizationById(ctx context.Context, organization Organization) (ImplResponse, error) {
-	// TODO - update CreateOrganizationById with the required logic for this service method.
+// CreateOrganizationByUUID - create new organization
+func (s *OrganizationsAPIService) CreateOrganizationByUUID(ctx context.Context, organization Organization) (ImplResponse, error) {
+	// TODO - update CreateOrganizationByUUID with the required logic for this service method.
 	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(201, Organization{}) or use other options such as http.Ok ...
@@ -52,12 +52,12 @@ func (s *OrganizationsAPIService) CreateOrganizationById(ctx context.Context, or
 	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	// return Response(400, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganizationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganizationByUUID method not implemented")
 }
 
-// GetOrganizationById - get organization data
-func (s *OrganizationsAPIService) GetOrganizationById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update GetOrganizationById with the required logic for this service method.
+// GetOrganizationByUUID - get organization data
+func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update GetOrganizationByUUID with the required logic for this service method.
 	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Organization{}) or use other options such as http.Ok ...
@@ -66,12 +66,12 @@ func (s *OrganizationsAPIService) GetOrganizationById(ctx context.Context, id in
 	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	// return Response(404, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetOrganizationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("GetOrganizationByUUID method not implemented")
 }
 
-// DeleteOrganizationById - delete organization
-func (s *OrganizationsAPIService) DeleteOrganizationById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update DeleteOrganizationById with the required logic for this service method.
+// DeleteOrganizationByUUID - delete organization
+func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update DeleteOrganizationByUUID with the required logic for this service method.
 	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
@@ -83,12 +83,12 @@ func (s *OrganizationsAPIService) DeleteOrganizationById(ctx context.Context, id
 	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	// return Response(404, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("DeleteOrganizationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("DeleteOrganizationByUUID method not implemented")
 }
 
-// EditOrganizationById - update organization information
-func (s *OrganizationsAPIService) EditOrganizationById(ctx context.Context, id int32, organization Organization) (ImplResponse, error) {
-	// TODO - update EditOrganizationById with the required logic for this service method.
+// EditOrganizationByUUID - update organization information
+func (s *OrganizationsAPIService) EditOrganizationByUUID(ctx context.Context, uuid string, organization Organization) (ImplResponse, error) {
+	// TODO - update EditOrganizationByUUID with the required logic for this service method.
 	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Organization{}) or use other options such as http.Ok ...
@@ -103,5 +103,5 @@ func (s *OrganizationsAPIService) EditOrganizationById(ctx context.Context, id i
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("EditOrganizationById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("EditOrganizationByUUID method not implemented")
 }

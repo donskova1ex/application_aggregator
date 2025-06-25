@@ -15,13 +15,13 @@ package openapi
 
 type Config struct {
 
-	OrganizationId int32 `json:"organization_id,omitempty"`
+	OrganizationUuid string `json:"organization_uuid"`
 
-	MaxLoanAmount int32 `json:"max_loan_amount,omitempty"`
+	MaxLoanAmount int32 `json:"max_loan_amount"`
 
-	NewClient bool `json:"new_client,omitempty"`
+	NewClient bool `json:"new_client"`
 
-	LoanAvailable bool `json:"loan_available,omitempty"`
+	LoanAvailable bool `json:"loan_available"`
 
 	CreatedAt string `json:"created_at,omitempty"`
 
@@ -32,6 +32,18 @@ type Config struct {
 
 // AssertConfigRequired checks if the required fields are not zero-ed
 func AssertConfigRequired(obj Config) error {
+	elements := map[string]interface{}{
+		"organization_uuid": obj.OrganizationUuid,
+		"max_loan_amount": obj.MaxLoanAmount,
+		"new_client": obj.NewClient,
+		"loan_available": obj.LoanAvailable,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
 	return nil
 }
 

@@ -56,25 +56,25 @@ func (c *OrganizationsAPIController) Routes() Routes {
 			"/api/v1/organizations",
 			c.Organizations,
 		},
-		"CreateOrganizationById": Route{
+		"CreateOrganizationByUUID": Route{
 			strings.ToUpper("Post"),
 			"/api/v1/organizations",
-			c.CreateOrganizationById,
+			c.CreateOrganizationByUUID,
 		},
-		"GetOrganizationById": Route{
+		"GetOrganizationByUUID": Route{
 			strings.ToUpper("Get"),
-			"/api/v1/organizations/{id}",
-			c.GetOrganizationById,
+			"/api/v1/organizations/{uuid}",
+			c.GetOrganizationByUUID,
 		},
-		"DeleteOrganizationById": Route{
+		"DeleteOrganizationByUUID": Route{
 			strings.ToUpper("Delete"),
-			"/api/v1/organizations/{id}",
-			c.DeleteOrganizationById,
+			"/api/v1/organizations/{uuid}",
+			c.DeleteOrganizationByUUID,
 		},
-		"EditOrganizationById": Route{
+		"EditOrganizationByUUID": Route{
 			strings.ToUpper("Patch"),
-			"/api/v1/organizations/{id}",
-			c.EditOrganizationById,
+			"/api/v1/organizations/{uuid}",
+			c.EditOrganizationByUUID,
 		},
 	}
 }
@@ -91,8 +91,8 @@ func (c *OrganizationsAPIController) Organizations(w http.ResponseWriter, r *htt
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// CreateOrganizationById - create new organization
-func (c *OrganizationsAPIController) CreateOrganizationById(w http.ResponseWriter, r *http.Request) {
+// CreateOrganizationByUUID - create new organization
+func (c *OrganizationsAPIController) CreateOrganizationByUUID(w http.ResponseWriter, r *http.Request) {
 	var organizationParam Organization
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
@@ -108,7 +108,7 @@ func (c *OrganizationsAPIController) CreateOrganizationById(w http.ResponseWrite
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.CreateOrganizationById(r.Context(), organizationParam)
+	result, err := c.service.CreateOrganizationByUUID(r.Context(), organizationParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -118,18 +118,15 @@ func (c *OrganizationsAPIController) CreateOrganizationById(w http.ResponseWrite
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// GetOrganizationById - get organization data
-func (c *OrganizationsAPIController) GetOrganizationById(w http.ResponseWriter, r *http.Request) {
+// GetOrganizationByUUID - get organization data
+func (c *OrganizationsAPIController) GetOrganizationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.GetOrganizationById(r.Context(), idParam)
+	result, err := c.service.GetOrganizationByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -139,18 +136,15 @@ func (c *OrganizationsAPIController) GetOrganizationById(w http.ResponseWriter, 
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// DeleteOrganizationById - delete organization
-func (c *OrganizationsAPIController) DeleteOrganizationById(w http.ResponseWriter, r *http.Request) {
+// DeleteOrganizationByUUID - delete organization
+func (c *OrganizationsAPIController) DeleteOrganizationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.DeleteOrganizationById(r.Context(), idParam)
+	result, err := c.service.DeleteOrganizationByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -160,15 +154,12 @@ func (c *OrganizationsAPIController) DeleteOrganizationById(w http.ResponseWrite
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// EditOrganizationById - update organization information
-func (c *OrganizationsAPIController) EditOrganizationById(w http.ResponseWriter, r *http.Request) {
+// EditOrganizationByUUID - update organization information
+func (c *OrganizationsAPIController) EditOrganizationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
 	var organizationParam Organization
@@ -186,7 +177,7 @@ func (c *OrganizationsAPIController) EditOrganizationById(w http.ResponseWriter,
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.EditOrganizationById(r.Context(), idParam, organizationParam)
+	result, err := c.service.EditOrganizationByUUID(r.Context(), uuidParam, organizationParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

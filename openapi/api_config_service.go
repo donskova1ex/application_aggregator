@@ -58,9 +58,9 @@ func (s *ConfigAPIService) CreateOrganization(ctx context.Context, config Config
 	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganization method not implemented")
 }
 
-// GetConfigById - get config data
-func (s *ConfigAPIService) GetConfigById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update GetConfigById with the required logic for this service method.
+// GetConfigByUUID - get config data
+func (s *ConfigAPIService) GetConfigByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update GetConfigByUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Config{}) or use other options such as http.Ok ...
@@ -72,12 +72,12 @@ func (s *ConfigAPIService) GetConfigById(ctx context.Context, id int32) (ImplRes
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetConfigById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("GetConfigByUUID method not implemented")
 }
 
-// DeleteConfigById - Delete config data
-func (s *ConfigAPIService) DeleteConfigById(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update DeleteConfigById with the required logic for this service method.
+// DeleteConfigByUUID - Delete config data
+func (s *ConfigAPIService) DeleteConfigByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update DeleteConfigByUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
@@ -89,12 +89,12 @@ func (s *ConfigAPIService) DeleteConfigById(ctx context.Context, id int32) (Impl
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("DeleteConfigById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("DeleteConfigByUUID method not implemented")
 }
 
-// EditConfigById - update config information
-func (s *ConfigAPIService) EditConfigById(ctx context.Context, id int32, config Config) (ImplResponse, error) {
-	// TODO - update EditConfigById with the required logic for this service method.
+// EditConfigByUUID - update config information
+func (s *ConfigAPIService) EditConfigByUUID(ctx context.Context, uuid string, config Config) (ImplResponse, error) {
+	// TODO - update EditConfigByUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Config{}) or use other options such as http.Ok ...
@@ -109,12 +109,12 @@ func (s *ConfigAPIService) EditConfigById(ctx context.Context, id int32, config 
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("EditConfigById method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("EditConfigByUUID method not implemented")
 }
 
-// GetConfigByOrganizationId - get organization&#39;s config data
-func (s *ConfigAPIService) GetConfigByOrganizationId(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update GetConfigByOrganizationId with the required logic for this service method.
+// GetConfigByOrganizationUUID - get organization&#39;s config data
+func (s *ConfigAPIService) GetConfigByOrganizationUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update GetConfigByOrganizationUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Config{}) or use other options such as http.Ok ...
@@ -123,12 +123,12 @@ func (s *ConfigAPIService) GetConfigByOrganizationId(ctx context.Context, id int
 	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	// return Response(404, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetConfigByOrganizationId method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("GetConfigByOrganizationUUID method not implemented")
 }
 
-// DeleteConfigByOrganizationId - Delete organization&#39;s config data
-func (s *ConfigAPIService) DeleteConfigByOrganizationId(ctx context.Context, id int32) (ImplResponse, error) {
-	// TODO - update DeleteConfigByOrganizationId with the required logic for this service method.
+// DeleteConfigByOrganizationUUID - Delete organization&#39;s config data
+func (s *ConfigAPIService) DeleteConfigByOrganizationUUID(ctx context.Context, uuid string) (ImplResponse, error) {
+	// TODO - update DeleteConfigByOrganizationUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
@@ -140,12 +140,12 @@ func (s *ConfigAPIService) DeleteConfigByOrganizationId(ctx context.Context, id 
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("DeleteConfigByOrganizationId method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("DeleteConfigByOrganizationUUID method not implemented")
 }
 
-// EditConfigByOrganizationId - update organization&#39;s config information
-func (s *ConfigAPIService) EditConfigByOrganizationId(ctx context.Context, id int32, config Config) (ImplResponse, error) {
-	// TODO - update EditConfigByOrganizationId with the required logic for this service method.
+// EditConfigByOrganizationUUID - update organization&#39;s config information
+func (s *ConfigAPIService) EditConfigByOrganizationUUID(ctx context.Context, uuid string, config Config) (ImplResponse, error) {
+	// TODO - update EditConfigByOrganizationUUID with the required logic for this service method.
 	// Add api_config_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	// TODO: Uncomment the next line to return response Response(200, Config{}) or use other options such as http.Ok ...
@@ -160,5 +160,5 @@ func (s *ConfigAPIService) EditConfigByOrganizationId(ctx context.Context, id in
 	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
 	// return Response(500, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("EditConfigByOrganizationId method not implemented")
+	return Response(http.StatusNotImplemented, nil), errors.New("EditConfigByOrganizationUUID method not implemented")
 }

@@ -61,20 +61,20 @@ func (c *LoanApplicationsAPIController) Routes() Routes {
 			"/api/v1/loan_applications",
 			c.CreateLoanApplication,
 		},
-		"GetLoanApplicationById": Route{
+		"GetLoanApplicationByUUID": Route{
 			strings.ToUpper("Get"),
-			"/api/v1/loan_applications/{id}",
-			c.GetLoanApplicationById,
+			"/api/v1/loan_applications/{uuid}",
+			c.GetLoanApplicationByUUID,
 		},
-		"DeleteLoanApplicationById": Route{
+		"DeleteLoanApplicationByUUID": Route{
 			strings.ToUpper("Delete"),
-			"/api/v1/loan_applications/{id}",
-			c.DeleteLoanApplicationById,
+			"/api/v1/loan_applications/{uuid}",
+			c.DeleteLoanApplicationByUUID,
 		},
-		"EditLoanApplicaitionById": Route{
+		"EditLoanApplicaitionByUUID": Route{
 			strings.ToUpper("Patch"),
-			"/api/v1/loan_applications/{id}",
-			c.EditLoanApplicaitionById,
+			"/api/v1/loan_applications/{uuid}",
+			c.EditLoanApplicaitionByUUID,
 		},
 	}
 }
@@ -118,18 +118,15 @@ func (c *LoanApplicationsAPIController) CreateLoanApplication(w http.ResponseWri
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// GetLoanApplicationById - get loan application's data
-func (c *LoanApplicationsAPIController) GetLoanApplicationById(w http.ResponseWriter, r *http.Request) {
+// GetLoanApplicationByUUID - get loan application's data
+func (c *LoanApplicationsAPIController) GetLoanApplicationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.GetLoanApplicationById(r.Context(), idParam)
+	result, err := c.service.GetLoanApplicationByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -139,18 +136,15 @@ func (c *LoanApplicationsAPIController) GetLoanApplicationById(w http.ResponseWr
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// DeleteLoanApplicationById - delete loan application
-func (c *LoanApplicationsAPIController) DeleteLoanApplicationById(w http.ResponseWriter, r *http.Request) {
+// DeleteLoanApplicationByUUID - delete loan application
+func (c *LoanApplicationsAPIController) DeleteLoanApplicationByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
-	result, err := c.service.DeleteLoanApplicationById(r.Context(), idParam)
+	result, err := c.service.DeleteLoanApplicationByUUID(r.Context(), uuidParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -160,15 +154,12 @@ func (c *LoanApplicationsAPIController) DeleteLoanApplicationById(w http.Respons
 	_ = EncodeJSONResponse(result.Body, &result.Code, w)
 }
 
-// EditLoanApplicaitionById - update loan application information
-func (c *LoanApplicationsAPIController) EditLoanApplicaitionById(w http.ResponseWriter, r *http.Request) {
+// EditLoanApplicaitionByUUID - update loan application information
+func (c *LoanApplicationsAPIController) EditLoanApplicaitionByUUID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idParam, err := parseNumericParameter[int32](
-		params["id"],
-		WithRequire[int32](parseInt32),
-	)
-	if err != nil {
-		c.errorHandler(w, r, &ParsingError{Param: "id", Err: err}, nil)
+	uuidParam := params["uuid"]
+	if uuidParam == "" {
+		c.errorHandler(w, r, &RequiredError{"uuid"}, nil)
 		return
 	}
 	var loanApplicationParam LoanApplication
@@ -186,7 +177,7 @@ func (c *LoanApplicationsAPIController) EditLoanApplicaitionById(w http.Response
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.EditLoanApplicaitionById(r.Context(), idParam, loanApplicationParam)
+	result, err := c.service.EditLoanApplicaitionByUUID(r.Context(), uuidParam, loanApplicationParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

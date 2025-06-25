@@ -2,6 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS organizations (
     id SERIAL PRIMARY KEY,
+    uuid VARCHAR(36) unique,
     name VARCHAR(64),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (name)

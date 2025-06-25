@@ -2,6 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS loan_applications (
     id SERIAL PRIMARY KEY,
+    uuid VARCHAR(36) unique,
     phone_number VARCHAR(36) NOT NULL,
     value DECIMAL(18,2) NOT NULL CONSTRAINT chk_positive_value CHECK (value >= 0),
     incoming_organization_id INTEGER REFERENCES organizations(id),

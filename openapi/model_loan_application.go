@@ -15,15 +15,28 @@ package openapi
 
 type LoanApplication struct {
 
-	Value int32 `json:"value,omitempty"`
+	Uuid string `json:"uuid,omitempty"`
 
-	Phone string `json:"phone,omitempty"`
+	Value int32 `json:"value"`
 
-	IncomingOrganizationId int32 `json:"incoming_organization_id,omitempty"`
+	Phone string `json:"phone"`
+
+	IncomingOrganizationUuid string `json:"incoming_organization_uuid"`
 }
 
 // AssertLoanApplicationRequired checks if the required fields are not zero-ed
 func AssertLoanApplicationRequired(obj LoanApplication) error {
+	elements := map[string]interface{}{
+		"value": obj.Value,
+		"phone": obj.Phone,
+		"incoming_organization_uuid": obj.IncomingOrganizationUuid,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
 	return nil
 }
 

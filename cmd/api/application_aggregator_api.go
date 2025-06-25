@@ -11,13 +11,43 @@
 package main
 
 import (
+	"context"
+	"github.com/donskova1ex/application_aggregator/config"
+	"github.com/donskova1ex/application_aggregator/internal/repositories"
 	openapi "github.com/donskova1ex/application_aggregator/openapi"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 func main() {
-	log.Printf("Server started")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logHandler := slog.NewJSONHandler(os.Stdout, nil)
+	logger := slog.New(logHandler)
+	slog.SetDefault(logger)
+
+	logger.Info("Server started")
+
+	logger.Info("API configuration initialization has started")
+	cfg, err := config.NewConfig()
+	if err != nil {
+		logger.Error("failed to load configuration", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	logger.Info("Configuration has been initialized")
+
+	logger.Info("DB initialization has started")
+	db, err := repositories.NewPostgresDB(ctx, cfg.DB)
+	if err != nil {
+		logger.Error("failed to initialize DB", slog.String("error", err.Error()))
+	}
+	logger.Info("DB has been initialized")
+
+	repositories.NewPostgresRepository(db, logger)
 
 	ConfigAPIService := openapi.NewConfigAPIService()
 	ConfigAPIController := openapi.NewConfigAPIController(ConfigAPIService)

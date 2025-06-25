@@ -49,20 +49,20 @@ paths:
                   $ref: '#/components/schemas/LoanApplication'
         '500':
           description: internal server error
-  /loan_applications/{id}:
+  /loan_applications/{uuid}:
     get:
       tags:
         - loan_applications
       summary: get loan application's data
-      description: get loan application data by ID
-      operationId: GetLoanApplicationById
+      description: get loan application data by uuid
+      operationId: GetLoanApplicationByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: config ID
+          description: config uuid
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: config was found successfully
@@ -76,15 +76,15 @@ paths:
       tags:
         - loan_applications
       summary: update loan application information
-      description: Updates loan application data by id
-      operationId: EditLoanApplicaitionById
+      description: Updates loan application data by uuid
+      operationId: EditLoanApplicaitionByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: Loan application ID for update
+          description: Loan application uuid for update
           required: true
           schema:
-            type: integer
+            type: string
       requestBody:
         description: loan application object that needs to be updated
         required: true
@@ -100,7 +100,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoanApplication'
         '400':
-          description: invalid ID or loan application data supplied
+          description: invalid uuid or loan application data supplied
         '404':
           description: loan application not found
         '500':
@@ -109,15 +109,15 @@ paths:
       tags:
         - loan_applications
       summary: delete loan application
-      description: Delete loan application by ID
-      operationId: DeleteLoanApplicationById
+      description: Delete loan application by uuid
+      operationId: DeleteLoanApplicationByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: Loan application ID for delete
+          description: Loan application uuid for delete
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: loan application deleted successfully
@@ -131,7 +131,7 @@ paths:
         - organizations
       summary: create new organization
       description: adding new organization
-      operationId: CreateOrganizationById
+      operationId: CreateOrganizationByUUID
       requestBody:
         required: true
         content:
@@ -164,20 +164,20 @@ paths:
                   $ref: '#/components/schemas/Organization'
         '500':
           description: internal server error
-  /organizations/{id}:
+  /organizations/{uuid}:
     patch:
       tags:
         - organizations
       summary: update organization information
-      description: Updates organization data by id
-      operationId: EditOrganizationById
+      description: Updates organization data by uuid
+      operationId: EditOrganizationByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: ID organization for update
+          description: uuid organization for update
           required: true
           schema:
-            type: integer
+            type: string
 
       requestBody:
         description: organization object that needs to be updated
@@ -194,7 +194,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Organization'
         '400':
-          description: invalid ID or organization data supplied
+          description: invalid uuid or organization data supplied
         '404':
           description: organization not found
         '500':
@@ -203,35 +203,35 @@ paths:
       tags:
         - organizations
       summary: delete organization
-      description: Delete organization by ID
-      operationId: DeleteOrganizationById
+      description: Delete organization by uuid
+      operationId: DeleteOrganizationByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: ID organization for delete
+          description: uuid organization for delete
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: organization deleted successfully
         '400':
-          description: invalid organization ID
+          description: invalid organization uuid
         '404':
           description: organization not found
     get:
       tags:
         - organizations
       summary: get organization data
-      description: get organization data by ID
-      operationId: GetOrganizationById
+      description: get organization data by uuid
+      operationId: GetOrganizationByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: ID organization for delete
+          description: uuid organization for delete
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: organization was found successfully
@@ -282,20 +282,20 @@ paths:
                 $ref: '#/components/schemas/Config'
         '400':
           description: Invalid data
-  /configs/{id}:
+  /configs/{uuid}:
     get:
       tags:
         - config
       summary: get config data
-      description: get config data by config ID
-      operationId: GetConfigById
+      description: get config data by config uuid
+      operationId: GetConfigByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: config ID
+          description: config uuid
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: config was found successfully
@@ -311,15 +311,15 @@ paths:
       tags:
         - config
       summary: Delete config data
-      description: Delete config data by config ID
-      operationId: DeleteConfigById
+      description: Delete config data by config uuid
+      operationId: DeleteConfigByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: config ID
+          description: config uuid
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: config deleted successfully
@@ -331,15 +331,15 @@ paths:
       tags:
         - config
       summary: update config information
-      description: Updates config data by id
-      operationId: EditConfigById
+      description: Updates config data by uuid
+      operationId: EditConfigByUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: ID config for update
+          description: uuid config for update
           required: true
           schema:
-            type: integer
+            type: string
 
       requestBody:
         description: config object that needs to be updated
@@ -356,25 +356,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/Config'
         '400':
-          description: invalid ID or config data supplied
+          description: invalid uuid or config data supplied
         '404':
           description: config not found
         '500':
           description: internal server error
-  /configs/organizations/{id}:
+  /configs/organizations/{uuid}:
     get:
       tags:
         - config
       summary: get organization's config data
-      description: get config data by organization ID
-      operationId: GetConfigByOrganizationId
+      description: get config data by organization uuid
+      operationId: GetConfigByOrganizationUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: organization ID
+          description: organization uuid
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: config was found successfully
@@ -388,15 +388,15 @@ paths:
       tags:
         - config
       summary: Delete organization's config data
-      description: Delete config data by organization ID
-      operationId: DeleteConfigByOrganizationId
+      description: Delete config data by organization uuid
+      operationId: DeleteConfigByOrganizationUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: config ID
+          description: config uuid
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: config deleted successfully
@@ -408,15 +408,15 @@ paths:
       tags:
         - config
       summary: update organization's config information
-      description: Updates config data by organization id
-      operationId: EditConfigByOrganizationId
+      description: Updates config data by organization uuid
+      operationId: EditConfigByOrganizationUUID
       parameters:
-        - name: id
+        - name: uuid
           in: path
-          description: ID organization for update data
+          description: uuid organization for update data
           required: true
           schema:
-            type: integer
+            type: string
 
       requestBody:
         description: config object that needs to be updated
@@ -433,7 +433,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Config'
         '400':
-          description: invalid organization ID or config data supplied
+          description: invalid organization uuid or config data supplied
         '404':
           description: config not found
         '500':
@@ -442,28 +442,45 @@ components:
   schemas:
     LoanApplication:
       type: object
+      required:
+        - value
+        - phone
+        - incoming_organization_uuid
       properties:
+        uuid:
+          type: string
+          example: 1111-1111-1111-1111-1112
         value:
           type: integer
           example: 10000
         phone:
           type: string
           example: +79994000101
-        incoming_organization_id:
-          type: integer
-          example: 1
+        incoming_organization_uuid:
+          type: string
+          example: 1111-1111-1111-1111-1111
     Organization:
       type: object
+      required:
+        - name
       properties:
+        uuid:
+          type: string
+          example: 1111-1111-1111-1111-1111
         name:
           type: string
           example: kassa_one
     Config:
       type: object
+      required:
+        - organization_uuid
+        - max_loan_amount
+        - new_client
+        - loan_available
       properties:
-        organization_id:
-          type: integer
-          example: 1
+        organization_uuid:
+          type: string
+          example: 1111-1111-1111-1111-1111
         max_loan_amount:
           type: integer
           example: 20000

@@ -15,11 +15,22 @@ package openapi
 
 type Organization struct {
 
-	Name string `json:"name,omitempty"`
+	Uuid string `json:"uuid,omitempty"`
+
+	Name string `json:"name"`
 }
 
 // AssertOrganizationRequired checks if the required fields are not zero-ed
 func AssertOrganizationRequired(obj Organization) error {
+	elements := map[string]interface{}{
+		"name": obj.Name,
+	}
+	for name, el := range elements {
+		if isZero := IsZeroValue(el); isZero {
+			return &RequiredError{Field: name}
+		}
+	}
+
 	return nil
 }
 

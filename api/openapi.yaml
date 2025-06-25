@@ -48,18 +48,18 @@ paths:
       summary: create client loan application from site
       tags:
       - loan_applications
-  /loan_applications/{id}:
+  /loan_applications/{uuid}:
     delete:
-      description: Delete loan application by ID
-      operationId: DeleteLoanApplicationById
+      description: Delete loan application by uuid
+      operationId: DeleteLoanApplicationByUUID
       parameters:
-      - description: Loan application ID for delete
+      - description: Loan application uuid for delete
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -72,16 +72,16 @@ paths:
       tags:
       - loan_applications
     get:
-      description: get loan application data by ID
-      operationId: GetLoanApplicationById
+      description: get loan application data by uuid
+      operationId: GetLoanApplicationByUUID
       parameters:
-      - description: config ID
+      - description: config uuid
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -96,16 +96,16 @@ paths:
       tags:
       - loan_applications
     patch:
-      description: Updates loan application data by id
-      operationId: EditLoanApplicaitionById
+      description: Updates loan application data by uuid
+      operationId: EditLoanApplicaitionByUUID
       parameters:
-      - description: Loan application ID for update
+      - description: Loan application uuid for update
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -122,7 +122,7 @@ paths:
                 $ref: '#/components/schemas/LoanApplication'
           description: loan application updated successfully
         "400":
-          description: invalid ID or loan application data supplied
+          description: invalid uuid or loan application data supplied
         "404":
           description: loan application not found
         "500":
@@ -150,7 +150,7 @@ paths:
       - organizations
     post:
       description: adding new organization
-      operationId: CreateOrganizationById
+      operationId: CreateOrganizationByUUID
       requestBody:
         content:
           application/json:
@@ -169,40 +169,40 @@ paths:
       summary: create new organization
       tags:
       - organizations
-  /organizations/{id}:
+  /organizations/{uuid}:
     delete:
-      description: Delete organization by ID
-      operationId: DeleteOrganizationById
+      description: Delete organization by uuid
+      operationId: DeleteOrganizationByUUID
       parameters:
-      - description: ID organization for delete
+      - description: uuid organization for delete
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
           description: organization deleted successfully
         "400":
-          description: invalid organization ID
+          description: invalid organization uuid
         "404":
           description: organization not found
       summary: delete organization
       tags:
       - organizations
     get:
-      description: get organization data by ID
-      operationId: GetOrganizationById
+      description: get organization data by uuid
+      operationId: GetOrganizationByUUID
       parameters:
-      - description: ID organization for delete
+      - description: uuid organization for delete
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -217,16 +217,16 @@ paths:
       tags:
       - organizations
     patch:
-      description: Updates organization data by id
-      operationId: EditOrganizationById
+      description: Updates organization data by uuid
+      operationId: EditOrganizationByUUID
       parameters:
-      - description: ID organization for update
+      - description: uuid organization for update
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -243,7 +243,7 @@ paths:
                 $ref: '#/components/schemas/Organization'
           description: organization updated successfully
         "400":
-          description: invalid ID or organization data supplied
+          description: invalid uuid or organization data supplied
         "404":
           description: organization not found
         "500":
@@ -292,18 +292,18 @@ paths:
       summary: create new config
       tags:
       - config
-  /configs/{id}:
+  /configs/{uuid}:
     delete:
-      description: Delete config data by config ID
-      operationId: DeleteConfigById
+      description: Delete config data by config uuid
+      operationId: DeleteConfigByUUID
       parameters:
-      - description: config ID
+      - description: config uuid
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -316,16 +316,16 @@ paths:
       tags:
       - config
     get:
-      description: get config data by config ID
-      operationId: GetConfigById
+      description: get config data by config uuid
+      operationId: GetConfigByUUID
       parameters:
-      - description: config ID
+      - description: config uuid
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -342,16 +342,16 @@ paths:
       tags:
       - config
     patch:
-      description: Updates config data by id
-      operationId: EditConfigById
+      description: Updates config data by uuid
+      operationId: EditConfigByUUID
       parameters:
-      - description: ID config for update
+      - description: uuid config for update
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -368,7 +368,7 @@ paths:
                 $ref: '#/components/schemas/Config'
           description: config updated successfully
         "400":
-          description: invalid ID or config data supplied
+          description: invalid uuid or config data supplied
         "404":
           description: config not found
         "500":
@@ -376,18 +376,18 @@ paths:
       summary: update config information
       tags:
       - config
-  /configs/organizations/{id}:
+  /configs/organizations/{uuid}:
     delete:
-      description: Delete config data by organization ID
-      operationId: DeleteConfigByOrganizationId
+      description: Delete config data by organization uuid
+      operationId: DeleteConfigByOrganizationUUID
       parameters:
-      - description: config ID
+      - description: config uuid
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -400,16 +400,16 @@ paths:
       tags:
       - config
     get:
-      description: get config data by organization ID
-      operationId: GetConfigByOrganizationId
+      description: get config data by organization uuid
+      operationId: GetConfigByOrganizationUUID
       parameters:
-      - description: organization ID
+      - description: organization uuid
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       responses:
         "200":
@@ -424,16 +424,16 @@ paths:
       tags:
       - config
     patch:
-      description: Updates config data by organization id
-      operationId: EditConfigByOrganizationId
+      description: Updates config data by organization uuid
+      operationId: EditConfigByOrganizationUUID
       parameters:
-      - description: ID organization for update data
+      - description: uuid organization for update data
         explode: false
         in: path
-        name: id
+        name: uuid
         required: true
         schema:
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -450,7 +450,7 @@ paths:
                 $ref: '#/components/schemas/Config'
           description: config updated successfully
         "400":
-          description: invalid organization ID or config data supplied
+          description: invalid organization uuid or config data supplied
         "404":
           description: config not found
         "500":
@@ -463,40 +463,54 @@ components:
     LoanApplication:
       example:
         phone: "79994000101"
+        incoming_organization_uuid: 1111-1111-1111-1111-1111
+        uuid: 1111-1111-1111-1111-1112
         value: 10000
-        incoming_organization_id: 1
       properties:
+        uuid:
+          example: 1111-1111-1111-1111-1112
+          type: string
         value:
           example: 10000
           type: integer
         phone:
           example: "79994000101"
           type: string
-        incoming_organization_id:
-          example: 1
-          type: integer
+        incoming_organization_uuid:
+          example: 1111-1111-1111-1111-1111
+          type: string
+      required:
+      - incoming_organization_uuid
+      - phone
+      - value
       type: object
     Organization:
       example:
         name: kassa_one
+        uuid: 1111-1111-1111-1111-1111
       properties:
+        uuid:
+          example: 1111-1111-1111-1111-1111
+          type: string
         name:
           example: kassa_one
           type: string
+      required:
+      - name
       type: object
     Config:
       example:
         is_avaliable: true
         updated_at: updated_at
         max_loan_amount: 20000
-        organization_id: 1
+        organization_uuid: 1111-1111-1111-1111-1111
         new_client: true
         created_at: 2025-06-24T07:48:39.676668+05:00
         loan_available: true
       properties:
-        organization_id:
-          example: 1
-          type: integer
+        organization_uuid:
+          example: 1111-1111-1111-1111-1111
+          type: string
         max_loan_amount:
           example: 20000
           type: integer
@@ -515,4 +529,9 @@ components:
         is_avaliable:
           example: true
           type: boolean
+      required:
+      - loan_available
+      - max_loan_amount
+      - new_client
+      - organization_uuid
       type: object
