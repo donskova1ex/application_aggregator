@@ -9,3 +9,6 @@ clean_api:
 
 api_docker_build:
 	docker build --no-cache -t ${API_CONTAINER_NAME}:${API_VERSION} -t ${API_CONTAINER_NAME}:latest -f Dockerfile.api .
+
+api_local_run:
+	go run ./cmd/api/application_aggregator_api.go

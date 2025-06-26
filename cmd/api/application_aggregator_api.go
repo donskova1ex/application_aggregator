@@ -13,13 +13,14 @@ package main
 import (
 	"context"
 	"github.com/donskova1ex/application_aggregator/config"
+	"github.com/donskova1ex/application_aggregator/internal/processors"
 	"github.com/donskova1ex/application_aggregator/internal/repositories"
+	"log"
 
 	//"context"
 	//"github.com/donskova1ex/application_aggregator/config"
 	//"github.com/donskova1ex/application_aggregator/internal/repositories"
 	openapi "github.com/donskova1ex/application_aggregator/openapi"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -51,7 +52,7 @@ func main() {
 	}
 	logger.Info("DB has been initialized")
 
-	repositories.NewPostgresRepository(db, logger)
+	repository := repositories.NewPostgresRepository(db, logger)
 
 	ConfigAPIService := openapi.NewConfigAPIService()
 	ConfigAPIController := openapi.NewConfigAPIController(ConfigAPIService)
@@ -59,10 +60,15 @@ func main() {
 	LoanApplicationsAPIService := openapi.NewLoanApplicationsAPIService()
 	LoanApplicationsAPIController := openapi.NewLoanApplicationsAPIController(LoanApplicationsAPIService)
 
-	OrganizationsAPIService := openapi.NewOrganizationsAPIService()
+	organizationProcessor := processors.NewOrganization(repository, logger)
+	OrganizationsAPIService := openapi.NewOrganizationsAPIService(organizationProcessor, logger)
 	OrganizationsAPIController := openapi.NewOrganizationsAPIController(OrganizationsAPIService)
 
 	router := openapi.NewRouter(ConfigAPIController, LoanApplicationsAPIController, OrganizationsAPIController)
+
+	//if err := http.ListenAndServe(":8080", router); err != nil {
+	//	logger.Error("failed to start server", slog.String("error", err.Error()))
+	//}
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

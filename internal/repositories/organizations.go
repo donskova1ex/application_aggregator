@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/donskova1ex/application_aggregator/internal/domain"
 	"github.com/google/uuid"
+	"time"
 )
 
 func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error) {
@@ -56,8 +57,11 @@ func (repo *PostgresRepository) DeleteOrganizationByUUID(ctx context.Context, uu
 	return nil
 }
 func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid string, organization *domain.Organization) (*domain.Organization, error) {
-	query := `UPDATE organizations SET name = $1 WHERE uuid = $2`
-	_, err := repo.db.ExecContext(ctx, query, organization.Name, uuid)
+	query := `UPDATE organizations SET name = $1, updated_at = $2 WHERE uuid = $3`
+
+	updateTime := time.Now()
+
+	_, err := repo.db.ExecContext(ctx, query, organization.Name, updateTime, uuid)
 	if err != nil {
 		return nil, fmt.Errorf("there is no organization with this uuid: %w", err)
 	}
@@ -65,16 +69,16 @@ func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid str
 	return organization, nil
 }
 func (repo *PostgresRepository) GetOrganizations(ctx context.Context) ([]*domain.Organization, error) {
-	orgalizations := []*domain.Organization{}
+	var organizations []*domain.Organization
 
 	query := `SELECT uuid, name FROM organizations`
-	err := repo.db.SelectContext(ctx, &orgalizations, query)
+	err := repo.db.SelectContext(ctx, &organizations, query)
 	if errors.Is(err, sql.ErrNoRows) {
-		return orgalizations, nil
+		return organizations, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("error getting organizations: %w", err)
 	}
 
-	return orgalizations, nil
+	return organizations, nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/donskova1ex/application_aggregator/config"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 func NewPostgresDB(ctx context.Context, postgresConfig *config.PostgresConfig) (*sqlx.DB, error) {

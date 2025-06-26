@@ -12,33 +12,51 @@ package openapi
 
 import (
 	"context"
+	"github.com/donskova1ex/application_aggregator/internal/domain"
+	"log/slog"
 	"net/http"
 	"errors"
 )
+
+type OrganizationsProcessor interface {
+	CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error)
+	GetOrganizationByUUID(ctx context.Context, uuid string) (*domain.Organization, error)
+	DeleteOrganizationByUUID(ctx context.Context, uuid string) error
+	UpdateOrganization(ctx context.Context, uuid string, organization *domain.Organization) (*domain.Organization, error)
+	GetOrganizations(ctx context.Context) ([]*domain.Organization, error)
+}
 
 // OrganizationsAPIService is a service that implements the logic for the OrganizationsAPIServicer
 // This service should implement the business logic for every endpoint for the OrganizationsAPI API.
 // Include any external packages or services that will be required by this service.
 type OrganizationsAPIService struct {
+	processor OrganizationsProcessor
+	logger *slog.Logger
 }
 
 // NewOrganizationsAPIService creates a default api service
-func NewOrganizationsAPIService() *OrganizationsAPIService {
-	return &OrganizationsAPIService{}
+func NewOrganizationsAPIService(processor OrganizationsProcessor, log * slog.Logger) *OrganizationsAPIService {
+	return &OrganizationsAPIService{
+		processor: processor,
+		logger: log,
+	}
 }
 
 // Organizations - get all organizations
 func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplResponse, error) {
-	// TODO - update Organizations with the required logic for this service method.
-	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	// TODO: Uncomment the next line to return response Response(200, []Organization{}) or use other options such as http.Ok ...
-	// return Response(200, []Organization{}), nil
+	organizations, err := s.processor.GetOrganizations(ctx)
+	if err != nil {
+		return Response(http.StatusInternalServerError, nil), err
+	}
 
-	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
-	// return Response(500, nil),nil
+	openApiOrganizations := domainOrganizationsToOpenAPI(organizations)
+	if len(openApiOrganizations) == 0 {
+		return Response(http.StatusNoContent, nil), nil
+	}
 
-	return Response(http.StatusNotImplemented, nil), errors.New("Organizations method not implemented")
+	return Response(http.StatusOK, openApiOrganizations), nil
+
 }
 
 // CreateOrganization - create new organization
@@ -104,4 +122,15 @@ func (s *OrganizationsAPIService) EditOrganizationByUUID(ctx context.Context, uu
 	// return Response(500, nil),nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("EditOrganizationByUUID method not implemented")
+}
+
+func domainOrganizationsToOpenAPI(domainOrganizations []*domain.Organization) []Organization {
+	organizations := make([]Organization, 0, len(domainOrganizations))
+	for _, organization := range domainOrganizations {
+		organizations = append(organizations, Organization{
+			Uuid: organization.Uuid,
+			Name: organization.Name,
+		})
+	}
+	return organizations
 }
