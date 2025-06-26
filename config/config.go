@@ -16,7 +16,7 @@ type PostgresConfig struct {
 }
 
 func NewConfig() (*Config, error) {
-	err := godotenv.Load(".env.local")
+	err := godotenv.Load(".env.dev")
 	if err != nil {
 		return nil, fmt.Errorf("error loading .env file, %w", err)
 	}
