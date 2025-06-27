@@ -27,6 +27,21 @@ type ParsingError struct {
 	Err   error
 }
 
+type APIError struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Details any    `json:"details,omitempty"`
+}
+
+
+func (e *APIError) wrapJson(statusCode int, message string, details any) *APIError {
+	return &APIError{
+		Status:  statusCode,
+		Message: message,
+		Details: details,
+	}
+}
+
 func (e *ParsingError) Unwrap() error {
 	return e.Err
 }

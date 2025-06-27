@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"errors"
 )
+var JsonError *APIError
 
 type OrganizationsProcessor interface {
 	CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error)
@@ -34,6 +35,7 @@ type OrganizationsAPIService struct {
 	logger *slog.Logger
 }
 
+
 // NewOrganizationsAPIService creates a default api service
 func NewOrganizationsAPIService(processor OrganizationsProcessor, log * slog.Logger) *OrganizationsAPIService {
 	return &OrganizationsAPIService{
@@ -46,6 +48,7 @@ func NewOrganizationsAPIService(processor OrganizationsProcessor, log * slog.Log
 func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplResponse, error) {
 
 	organizations, err := s.processor.GetOrganizations(ctx)
+
 	if err != nil {
 		return Response(http.StatusInternalServerError, nil), err
 	}
@@ -61,16 +64,19 @@ func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplRespon
 
 // CreateOrganization - create new organization
 func (s *OrganizationsAPIService) CreateOrganization(ctx context.Context, organization Organization) (ImplResponse, error) {
-	// TODO - update CreateOrganization with the required logic for this service method.
-	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	// TODO: Uncomment the next line to return response Response(201, Organization{}) or use other options such as http.Ok ...
-	// return Response(201, Organization{}), nil
+	result, err := s.processor.CreateOrganization(ctx, &domain.Organization{
+		Uuid: organization.Uuid,
+		Name: organization.Name,
+	})
+	if err != nil {
+		return Response(http.StatusBadRequest, JsonError.wrapJson(http.StatusBadRequest, err.Error(), organization)), nil
+	}
+	return Response(201, Organization{
+		Uuid: result.Uuid,
+		Name: result.Name,
+	}), nil
 
-	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	// return Response(400, nil),nil
-
-	return Response(http.StatusNotImplemented, nil), errors.New("CreateOrganization method not implemented")
 }
 
 // GetOrganizationByUUID - get organization data

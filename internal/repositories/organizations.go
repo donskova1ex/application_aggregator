@@ -11,16 +11,20 @@ import (
 )
 
 func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error) {
-	query := `INSERT INTO organizations(uuid, name) VALUES ($1, $2) ON CONFLICT ON CONSTRAINT organizations_name_key DO NOTHING RETURNING uuid`
+	query := `INSERT INTO organizations(uuid, name) VALUES ($1, $2) ON CONFLICT ON CONSTRAINT organizations_name_key DO NOTHING RETURNING id`
 
 	newUUID := uuid.NewString()
-	row := repo.db.QueryRowContext(ctx, query, newUUID, organization.Name)
-	if err := row.Err(); err != nil {
+	result, err := repo.db.ExecContext(ctx, query, newUUID, organization.Name)
+	if err != nil {
 		return nil, fmt.Errorf("error creating organization: %w", err)
 	}
-	var id uint32
-	if err := row.Scan(&id); err != nil {
-		return nil, fmt.Errorf("error scanning organization by uuid: %w", err)
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("error checking rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("organization with name [%s] already exists", organization.Name)
 	}
 
 	newOrganization := &domain.Organization{
