@@ -99,7 +99,7 @@ func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uui
 			JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid,}),
 			), nil
 	}
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) && !errors.Is(err, internal.UUIDValidationFailed){
 		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
 	}
 
@@ -126,7 +126,7 @@ func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, 
 		})), nil
 	}
 
-	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) {
+	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.UUIDValidationFailed) {
 		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
 	}
 	return Response(http.StatusOK, nil), nil
@@ -135,22 +135,27 @@ func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, 
 
 // EditOrganizationByUUID - update organization information
 func (s *OrganizationsAPIService) EditOrganizationByUUID(ctx context.Context, uuid string, organization Organization) (ImplResponse, error) {
-	// TODO - update EditOrganizationByUUID with the required logic for this service method.
-	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	// TODO: Uncomment the next line to return response Response(200, Organization{}) or use other options such as http.Ok ...
-	// return Response(200, Organization{}), nil
+	result, err :=  s.processor.UpdateOrganization(ctx,uuid, &domain.Organization{
+		Name: organization.Name,
+		Uuid: uuid,
+	})
+	if errors.Is(err, internal.UUIDValidationFailed) {
+		return Response(http.StatusBadRequest, JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid": uuid})), nil
+	}
+	if errors.Is(err, internal.ErrRecordNotFound) {
+		return Response(http.StatusNotFound, JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid})), nil
+	}
+	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.UUIDValidationFailed) {
+		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
+	}
 
-	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	// return Response(400, nil),nil
+	updatedOrganization := Organization{
+		Uuid: result.Uuid,
+		Name: result.Name,
+	}
 
-	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	// return Response(404, nil),nil
-
-	// TODO: Uncomment the next line to return response Response(500, {}) or use other options such as http.Ok ...
-	// return Response(500, nil),nil
-
-	return Response(http.StatusNotImplemented, nil), errors.New("EditOrganizationByUUID method not implemented")
+	return Response(http.StatusOK, updatedOrganization), nil
 }
 
 func domainOrganizationsToOpenAPI(domainOrganizations []*domain.Organization) []Organization {

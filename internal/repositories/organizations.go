@@ -89,9 +89,17 @@ func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid str
 
 	updateTime := time.Now()
 
-	_, err := repo.db.ExecContext(ctx, query, organization.Name, updateTime, uuid)
+	result, err := repo.db.ExecContext(ctx, query, organization.Name, updateTime, uuid)
 	if err != nil {
-		return nil, fmt.Errorf("there is no organization with this uuid: %w", err)
+		return nil, fmt.Errorf("error updating organization: %w", err)
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("error checking rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("organization with uuid not found: %w", internal.ErrRecordNotFound)
 	}
 
 	return organization, nil
