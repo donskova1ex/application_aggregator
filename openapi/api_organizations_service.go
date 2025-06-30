@@ -12,6 +12,8 @@ package openapi
 
 import (
 	"context"
+	"database/sql"
+	"github.com/donskova1ex/application_aggregator/internal"
 	"github.com/donskova1ex/application_aggregator/internal/domain"
 	"log/slog"
 	"net/http"
@@ -81,33 +83,54 @@ func (s *OrganizationsAPIService) CreateOrganization(ctx context.Context, organi
 
 // GetOrganizationByUUID - get organization data
 func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
-	// TODO - update GetOrganizationByUUID with the required logic for this service method.
-	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	// TODO: Uncomment the next line to return response Response(200, Organization{}) or use other options such as http.Ok ...
-	// return Response(200, Organization{}), nil
+	organization, err := s.processor.GetOrganizationByUUID(ctx, uuid)
 
-	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	// return Response(404, nil),nil
+	if errors.Is(err, internal.UUIDValidationFailed) {
+		return Response(
+			http.StatusBadRequest,
+			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
+			), nil
+	}
 
-	return Response(http.StatusNotImplemented, nil), errors.New("GetOrganizationByUUID method not implemented")
+	if errors.Is(err, internal.ErrRecordNotFound) {
+		return Response(
+			http.StatusNotFound,
+			JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid,}),
+			), nil
+	}
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
+	}
+
+	return Response(http.StatusOK, organization), nil
 }
 
 // DeleteOrganizationByUUID - delete organization
 func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
-	// TODO - update DeleteOrganizationByUUID with the required logic for this service method.
-	// Add api_organizations_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	// TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	// return Response(200, nil),nil
+	err := s.processor.DeleteOrganizationByUUID(ctx, uuid)
+	if errors.Is(err, internal.UUIDValidationFailed) {
+		return Response(
+			http.StatusBadRequest,
+			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
+			), nil
+	}
 
-	// TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	// return Response(400, nil),nil
+	if errors.Is(err, internal.ErrRecordNotFound) {
+		return Response(
+			http.StatusNotFound,
+			JsonError.wrapJson(404, err.Error(),
+				map[string]string{
+			"uuid": uuid,
+		})), nil
+	}
 
-	// TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	// return Response(404, nil),nil
+	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) {
+		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
+	}
+	return Response(http.StatusOK, nil), nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("DeleteOrganizationByUUID method not implemented")
 }
 
 // EditOrganizationByUUID - update organization information
