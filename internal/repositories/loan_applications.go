@@ -81,7 +81,7 @@ func (repo *PostgresRepository) CreateLoanApplication(ctx context.Context, loanA
 			}
 		}
 	}
-
+	//TODO: continue
 	loanApplication.Uuid = newUUID
 
 	return loanApplication, nil
