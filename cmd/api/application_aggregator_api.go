@@ -46,7 +46,7 @@ func main() {
 	logger.Info("Configuration has been initialized")
 
 	logger.Info("DB initialization has started")
-	db, err := repositories.NewPostgresDB(ctx, cfg.DB)
+	db, err := repositories.NewPostgresDB(ctx, cfg.PGDB)
 	if err != nil {
 		logger.Error("failed to initialize DB", slog.String("error", err.Error()))
 	}
