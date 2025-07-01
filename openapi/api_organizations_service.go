@@ -86,7 +86,7 @@ func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uui
 
 	organization, err := s.processor.GetOrganizationByUUID(ctx, uuid)
 
-	if errors.Is(err, internal.UUIDValidationFailed) {
+	if errors.Is(err, internal.ErrUUIDValidation) {
 		return Response(
 			http.StatusBadRequest,
 			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
@@ -99,7 +99,7 @@ func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uui
 			JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid,}),
 			), nil
 	}
-	if err != nil && !errors.Is(err, sql.ErrNoRows) && !errors.Is(err, internal.UUIDValidationFailed){
+	if err != nil && !errors.Is(err, sql.ErrNoRows) && !errors.Is(err, internal.ErrUUIDValidation){
 		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
 	}
 
@@ -110,7 +110,7 @@ func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uui
 func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
 
 	err := s.processor.DeleteOrganizationByUUID(ctx, uuid)
-	if errors.Is(err, internal.UUIDValidationFailed) {
+	if errors.Is(err, internal.ErrUUIDValidation) {
 		return Response(
 			http.StatusBadRequest,
 			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
@@ -126,7 +126,7 @@ func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, 
 		})), nil
 	}
 
-	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.UUIDValidationFailed) {
+	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.ErrUUIDValidation) {
 		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
 	}
 	return Response(http.StatusOK, nil), nil
@@ -140,13 +140,13 @@ func (s *OrganizationsAPIService) EditOrganizationByUUID(ctx context.Context, uu
 		Name: organization.Name,
 		Uuid: uuid,
 	})
-	if errors.Is(err, internal.UUIDValidationFailed) {
+	if errors.Is(err, internal.ErrUUIDValidation) {
 		return Response(http.StatusBadRequest, JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid": uuid})), nil
 	}
 	if errors.Is(err, internal.ErrRecordNotFound) {
 		return Response(http.StatusNotFound, JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid})), nil
 	}
-	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.UUIDValidationFailed) {
+	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.ErrUUIDValidation) {
 		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
 	}
 

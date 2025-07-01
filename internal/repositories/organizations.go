@@ -38,7 +38,7 @@ func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organiza
 
 func (repo *PostgresRepository) GetOrganizationByUUID(ctx context.Context, uuid string) (*domain.Organization, error) {
 	if !tools.ValidUUID(uuid) {
-		return nil, fmt.Errorf("invalid uuid: %w", internal.UUIDValidationFailed)
+		return nil, fmt.Errorf("invalid organization uuid: %w", internal.ErrUUIDValidation)
 	}
 
 	query := `SELECT uuid, name FROM organizations WHERE uuid = $1`
@@ -58,7 +58,7 @@ func (repo *PostgresRepository) GetOrganizationByUUID(ctx context.Context, uuid 
 
 func (repo *PostgresRepository) DeleteOrganizationByUUID(ctx context.Context, uuid string) error {
 	if !tools.ValidUUID(uuid) {
-		return fmt.Errorf("invalid uuid: %w", internal.UUIDValidationFailed)
+		return fmt.Errorf("invalid organization uuid: %w", internal.ErrUUIDValidation)
 	}
 
 	querty := `DELETE FROM organizations WHERE uuid = $1`
@@ -82,7 +82,7 @@ func (repo *PostgresRepository) DeleteOrganizationByUUID(ctx context.Context, uu
 }
 func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid string, organization *domain.Organization) (*domain.Organization, error) {
 	if !tools.ValidUUID(uuid) {
-		return nil, fmt.Errorf("invalid uuid: %w", internal.UUIDValidationFailed)
+		return nil, fmt.Errorf("invalid organization uuid: %w", internal.ErrUUIDValidation)
 	}
 
 	query := `UPDATE organizations SET name = $1, updated_at = $2 WHERE uuid = $3`

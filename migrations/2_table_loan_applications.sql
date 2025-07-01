@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS loan_applications (
     id SERIAL PRIMARY KEY,
     uuid VARCHAR(36) unique,
     phone VARCHAR(36) NOT NULL,
-    value DECIMAL(18,2) NOT NULL CONSTRAINT chk_positive_value CHECK (value >= 0),
+    value DECIMAL(18,2) NOT NULL CONSTRAINT chk_positive_value CHECK (value >= 1000),
     incoming_organization_uuid VARCHAR(36) REFERENCES organizations(uuid),
     issue_organization_uuid VARCHAR(36) REFERENCES organizations(uuid),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
