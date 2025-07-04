@@ -17,12 +17,13 @@ func (repo *PostgresRepository) LoanApplications(ctx context.Context) ([]*domain
 
 	var loanApplications []*domain.LoanApplication
 	err := repo.db.SelectContext(ctx, &loanApplications, query)
-	if errors.Is(err, sql.ErrNoRows) {
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
 		return loanApplications, nil
-	}
-	if err != nil {
+	case err != nil:
 		return nil, fmt.Errorf("error getting loan applications: %w", err)
 	}
+
 	return loanApplications, nil
 }
 
@@ -34,10 +35,11 @@ func (repo *PostgresRepository) GetLoanApplicationsByUUID(ctx context.Context, u
 	query := `SELECT uuid, value, phone, incoming_organization_uuid FROM loan_applications WHERE uuid=$1`
 	loanApplication := &domain.LoanApplication{}
 	err := repo.db.GetContext(ctx, loanApplication, query, uuid)
-	if errors.Is(err, sql.ErrNoRows) {
+
+	switch {
+	case errors.Is(err, sql.ErrNoRows):
 		return nil, fmt.Errorf(`loan application not found: %w`, internal.ErrRecordNotFound)
-	}
-	if err != nil {
+	case err != nil:
 		return nil, fmt.Errorf("error getting loan application by uuid: %w", err)
 	}
 
@@ -98,5 +100,40 @@ func (repo *PostgresRepository) UpdateLoanApplication(ctx context.Context, uuid 
 	if !tools.ValidUUID(uuid) {
 		return nil, fmt.Errorf("invalid loan application uuid: %w", internal.ErrUUIDValidation)
 	}
-	return nil, nil
+	if !tools.ValidUUID(loanApplication.IncomingOrganizationUuid) {
+		return nil, fmt.Errorf("invalid incoming organization uuid: %w", internal.ErrIssueOrganizationUUID)
+	}
+	_, err := repo.GetLoanApplicationsByUUID(ctx, uuid)
+	if err != nil {
+		return nil, fmt.Errorf(`loan application not found: %w`, internal.ErrRecordNotFound)
+	}
+
+	query := `UPDATE loan_applications
+					SET 
+						issue_organization_uuid = $1,
+						updated_at = NOW()
+					FROM 
+						organizations
+					WHERE 
+						loan_applications.uuid = $2
+					RETURNING *`
+
+	var changingLoanApplication *domain.LoanApplication
+	err = repo.db.GetContext(ctx, &changingLoanApplication, query, loanApplication.IssueOrganizationUuid, uuid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf(`loan application not found: %w`, internal.ErrRecordNotFound)
+		}
+
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch pqErr.Constraint {
+			case "loan_applications_issue_organization_uuid_fkey":
+				return nil, fmt.Errorf("invalid issue organization uuid: %w", internal.ErrIssueOrganizationUUID)
+			}
+		}
+		return nil, fmt.Errorf("error updating loan application: %w", err)
+	}
+
+	return changingLoanApplication, nil
 }

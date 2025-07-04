@@ -10,7 +10,6 @@ import (
 	"github.com/donskova1ex/application_aggregator/tools"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
-	"time"
 )
 
 func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error) {
@@ -89,11 +88,9 @@ func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid str
 		return nil, fmt.Errorf("invalid organization uuid: %w", internal.ErrUUIDValidation)
 	}
 
-	query := `UPDATE organizations SET name = $1, updated_at = $2 WHERE uuid = $3`
+	query := `UPDATE organizations SET name = $1, updated_at = NOW() WHERE uuid = $2`
 
-	updateTime := time.Now()
-
-	result, err := repo.db.ExecContext(ctx, query, organization.Name, updateTime, uuid)
+	result, err := repo.db.ExecContext(ctx, query, organization.Name, uuid)
 	if err != nil {
 		var pqErr *pq.Error
 		if errors.As(err, &pqErr) {
