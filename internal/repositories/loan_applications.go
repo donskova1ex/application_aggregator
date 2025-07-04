@@ -116,7 +116,7 @@ func (repo *PostgresRepository) UpdateLoanApplication(ctx context.Context, uuid 
 						created_at, updated_at`
 
 	var changingLoanApplication *domain.LoanApplication
-	err = repo.db.GetContext(ctx, &changingLoanApplication, query, loanApplication.IssueOrganizationUuid, uuid)
+	err := repo.db.GetContext(ctx, &changingLoanApplication, query, loanApplication.IssueOrganizationUuid, uuid)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf(`loan application not found: %w`, internal.ErrRecordNotFound)
