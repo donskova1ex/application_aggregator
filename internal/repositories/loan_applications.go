@@ -64,25 +64,39 @@ func (repo *PostgresRepository) CreateLoanApplication(ctx context.Context, loanA
 						WHERE phone = $2
 						AND incoming_organization_uuid = $4
 						AND created_at::date = CURRENT_DATE
-						)`
+						) RETURNING uuid`
 	newUUID := uuid.NewString()
 
-	//result, err := repo.db.ExecContext(ctx, query, newUUID, loanApplication.Phone, loanApplication.Value, loanApplication.IncomingOrganizationUuid)
 	row := repo.db.QueryRowContext(ctx, query, newUUID, loanApplication.Phone, loanApplication.Value, loanApplication.IncomingOrganizationUuid)
-	var pqErr *pq.Error
 	err := row.Err()
 	if err != nil {
+		var pqErr *pq.Error
 		if errors.As(err, &pqErr) {
-			if pqErr.Constraint == "chk_positive_value" {
-				return nil, fmt.Errorf(`error loan application value: %s`, loanApplication.Phone)
-			}
-			if pqErr.Constraint == "loan_applications_uuid_key" {
-				return nil, fmt.Errorf(`error loan application uuid checking: %s`, loanApplication.IncomingOrganizationUuid)
+			switch pqErr.Constraint {
+			case "chk_positive_value":
+				return nil, fmt.Errorf(`error loan application value: %w`, internal.ErrPositiveValue)
+			case "loan_applications_uuid_key":
+				return nil, fmt.Errorf(`error loan application uuid checking: %w`, internal.ErrEntityUUIDDuplicate)
+			case "loan_applications_incoming_organization_uuid_fkey":
+				return nil, fmt.Errorf("error loan application incoming organization uuid: %w", internal.ErrIncomingOrganizationUUID)
 			}
 		}
+		return nil, fmt.Errorf("error creating loan application: %w", err)
 	}
-	//TODO: continue
-	loanApplication.Uuid = newUUID
+
+	var entUUID string
+	err = row.Scan(&entUUID)
+	if err != nil {
+		return nil, fmt.Errorf("error new loan application uuid scan: %w", err)
+	}
+	loanApplication.Uuid = entUUID
 
 	return loanApplication, nil
+}
+
+func (repo *PostgresRepository) UpdateLoanApplication(ctx context.Context, uuid string, loanApplication *domain.LoanApplication) (*domain.LoanApplication, error) {
+	if !tools.ValidUUID(uuid) {
+		return nil, fmt.Errorf("invalid loan application uuid: %w", internal.ErrUUIDValidation)
+	}
+	return nil, nil
 }

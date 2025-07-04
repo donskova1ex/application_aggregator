@@ -9,31 +9,35 @@ import (
 	"github.com/donskova1ex/application_aggregator/internal/domain"
 	"github.com/donskova1ex/application_aggregator/tools"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"time"
 )
 
 func (repo *PostgresRepository) CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error) {
-	query := `INSERT INTO organizations(uuid, name) VALUES ($1, $2) ON CONFLICT ON CONSTRAINT organizations_name_key DO NOTHING RETURNING id`
+	query := `INSERT INTO organizations(uuid, name) VALUES ($1, $2) RETURNING uuid`
 
 	newUUID := uuid.NewString()
-	result, err := repo.db.ExecContext(ctx, query, newUUID, organization.Name)
+	row := repo.db.QueryRowContext(ctx, query, newUUID, organization.Name)
+	err := row.Err()
 	if err != nil {
-		return nil, fmt.Errorf("error creating organization: %w", err)
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch pqErr.Constraint {
+			case "organizations_uuid_key":
+				return nil, fmt.Errorf("organizations uuid [%s] already exists: %w", newUUID, internal.ErrEntityUUIDDuplicate)
+			case "organizations_name_key":
+				return nil, fmt.Errorf("organization name [%s] duplicating: %w", organization.Name, internal.ErrOrganizationNameDuplicate)
+			}
+		}
+		return nil, fmt.Errorf("failed to insert organization: %w", err)
 	}
-
-	rowsAffected, err := result.RowsAffected()
+	var entUUID string
+	err = row.Scan(&entUUID)
 	if err != nil {
-		return nil, fmt.Errorf("error checking rows affected: %w", err)
+		return nil, fmt.Errorf("failed to insert organization: %w", err)
 	}
-	if rowsAffected == 0 {
-		return nil, fmt.Errorf("organization with name [%s] already exists", organization.Name)
-	}
-
-	newOrganization := &domain.Organization{
-		Uuid: newUUID,
-		Name: organization.Name,
-	}
-	return newOrganization, nil
+	organization.Uuid = entUUID
+	return organization, nil
 }
 
 func (repo *PostgresRepository) GetOrganizationByUUID(ctx context.Context, uuid string) (*domain.Organization, error) {
@@ -61,9 +65,9 @@ func (repo *PostgresRepository) DeleteOrganizationByUUID(ctx context.Context, uu
 		return fmt.Errorf("invalid organization uuid: %w", internal.ErrUUIDValidation)
 	}
 
-	querty := `DELETE FROM organizations WHERE uuid = $1`
+	query := `DELETE FROM organizations WHERE uuid = $1`
 
-	result, err := repo.db.ExecContext(ctx, querty, uuid)
+	result, err := repo.db.ExecContext(ctx, query, uuid)
 
 	if err != nil {
 		return fmt.Errorf("error deleting organization with this uuid: %w", err)
@@ -91,6 +95,13 @@ func (repo *PostgresRepository) UpdateOrganization(ctx context.Context, uuid str
 
 	result, err := repo.db.ExecContext(ctx, query, organization.Name, updateTime, uuid)
 	if err != nil {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch pqErr.Constraint {
+			case "organizations_name_key":
+				return nil, fmt.Errorf("organization name [%s] duplicating: %w", organization.Name, internal.ErrOrganizationNameDuplicate)
+			}
+		}
 		return nil, fmt.Errorf("error updating organization: %w", err)
 	}
 	rowsAffected, err := result.RowsAffected()

@@ -12,14 +12,12 @@ package openapi
 
 import (
 	"context"
-	"database/sql"
 	"github.com/donskova1ex/application_aggregator/internal"
 	"github.com/donskova1ex/application_aggregator/internal/domain"
 	"log/slog"
 	"net/http"
 	"errors"
 )
-var JsonError *APIError
 
 type OrganizationsProcessor interface {
 	CreateOrganization(ctx context.Context, organization *domain.Organization) (*domain.Organization, error)
@@ -52,7 +50,7 @@ func (s *OrganizationsAPIService) Organizations(ctx context.Context) (ImplRespon
 	organizations, err := s.processor.GetOrganizations(ctx)
 
 	if err != nil {
-		return Response(http.StatusInternalServerError, nil), err
+		return ApiErrorResponse(http.StatusInternalServerError, err, nil)
 	}
 
 	openApiOrganizations := domainOrganizationsToOpenAPI(organizations)
@@ -71,38 +69,33 @@ func (s *OrganizationsAPIService) CreateOrganization(ctx context.Context, organi
 		Uuid: organization.Uuid,
 		Name: organization.Name,
 	})
-	if err != nil {
-		return Response(http.StatusBadRequest, JsonError.wrapJson(http.StatusBadRequest, err.Error(), organization)), nil
+	switch {
+	case errors.Is(err, internal.ErrEntityUUIDDuplicate):
+		return ApiErrorResponse(http.StatusInternalServerError, err, nil)
+	case errors.Is(err, internal.ErrOrganizationNameDuplicate):
+		return ApiErrorResponse(http.StatusConflict, err, organization)
+	case err != nil:
+		return ApiErrorResponse(http.StatusBadRequest, err, organization)
 	}
+
 	return Response(201, Organization{
 		Uuid: result.Uuid,
 		Name: result.Name,
 	}), nil
-
 }
 
 // GetOrganizationByUUID - get organization data
 func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
 
 	organization, err := s.processor.GetOrganizationByUUID(ctx, uuid)
-
-	if errors.Is(err, internal.ErrUUIDValidation) {
-		return Response(
-			http.StatusBadRequest,
-			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
-			), nil
+	switch {
+	case errors.Is(err, internal.ErrRecordNotFound):
+		return ApiErrorResponse(http.StatusNotFound, err, map[string]string{"uuid": uuid})
+	case errors.Is(err, internal.ErrUUIDValidation):
+		return ApiErrorResponse(http.StatusBadRequest, err, map[string]string{"uuid": uuid})
+	case err != nil:
+		return ApiErrorResponse(http.StatusInternalServerError, err, nil)
 	}
-
-	if errors.Is(err, internal.ErrRecordNotFound) {
-		return Response(
-			http.StatusNotFound,
-			JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid,}),
-			), nil
-	}
-	if err != nil && !errors.Is(err, sql.ErrNoRows) && !errors.Is(err, internal.ErrUUIDValidation){
-		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
-	}
-
 	return Response(http.StatusOK, organization), nil
 }
 
@@ -110,27 +103,15 @@ func (s *OrganizationsAPIService) GetOrganizationByUUID(ctx context.Context, uui
 func (s *OrganizationsAPIService) DeleteOrganizationByUUID(ctx context.Context, uuid string) (ImplResponse, error) {
 
 	err := s.processor.DeleteOrganizationByUUID(ctx, uuid)
-	if errors.Is(err, internal.ErrUUIDValidation) {
-		return Response(
-			http.StatusBadRequest,
-			JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid":uuid}),
-			), nil
-	}
-
-	if errors.Is(err, internal.ErrRecordNotFound) {
-		return Response(
-			http.StatusNotFound,
-			JsonError.wrapJson(404, err.Error(),
-				map[string]string{
-			"uuid": uuid,
-		})), nil
-	}
-
-	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.ErrUUIDValidation) {
-		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
+	switch {
+	case errors.Is(err, internal.ErrRecordNotFound):
+		return ApiErrorResponse(http.StatusNotFound, err, map[string]string{"uuid": uuid})
+	case errors.Is(err, internal.ErrUUIDValidation):
+		return ApiErrorResponse(http.StatusBadRequest, err, map[string]string{"uuid": uuid})
+	case err != nil:
+		return ApiErrorResponse(http.StatusInternalServerError, err, nil)
 	}
 	return Response(http.StatusOK, nil), nil
-
 }
 
 // EditOrganizationByUUID - update organization information
@@ -140,14 +121,15 @@ func (s *OrganizationsAPIService) EditOrganizationByUUID(ctx context.Context, uu
 		Name: organization.Name,
 		Uuid: uuid,
 	})
-	if errors.Is(err, internal.ErrUUIDValidation) {
-		return Response(http.StatusBadRequest, JsonError.wrapJson(http.StatusBadRequest, err.Error(), map[string]string{"uuid": uuid})), nil
-	}
-	if errors.Is(err, internal.ErrRecordNotFound) {
-		return Response(http.StatusNotFound, JsonError.wrapJson(http.StatusNotFound, err.Error(), map[string]string{"uuid": uuid})), nil
-	}
-	if err != nil && !errors.Is(err, internal.ErrRecordNotFound) && !errors.Is(err, internal.ErrUUIDValidation) {
-		return Response(http.StatusInternalServerError, JsonError.wrapJson(http.StatusInternalServerError, err.Error(),nil)), nil
+	switch {
+	case errors.Is(err, internal.ErrUUIDValidation):
+		return ApiErrorResponse(http.StatusBadRequest, err, map[string]string{"uuid": uuid})
+	case errors.Is(err, internal.ErrRecordNotFound):
+		return ApiErrorResponse(http.StatusNotFound, err, map[string]string{"uuid": uuid})
+	case errors.Is(err, internal.ErrOrganizationNameDuplicate):
+		return ApiErrorResponse(http.StatusConflict, err, organization)
+	case err != nil:
+		return ApiErrorResponse(http.StatusInternalServerError, err, nil)
 	}
 
 	updatedOrganization := Organization{

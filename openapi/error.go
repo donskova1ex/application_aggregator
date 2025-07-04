@@ -27,15 +27,15 @@ type ParsingError struct {
 	Err   error
 }
 
-type APIError struct {
+type apiError struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Details any    `json:"details,omitempty"`
 }
 
 
-func (e *APIError) wrapJson(statusCode int, message string, details any) *APIError {
-	return &APIError{
+func (e *apiError) wrapJson(statusCode int, message string, details any) *apiError {
+	return &apiError{
 		Status:  statusCode,
 		Message: message,
 		Details: details,
@@ -71,19 +71,25 @@ type ErrorHandler func(w http.ResponseWriter, r *http.Request, err error, result
 // request params will return a StatusBadRequest. Otherwise, the error code originating from the servicer will be used.
 func DefaultErrorHandler(w http.ResponseWriter, _ *http.Request, err error, result *ImplResponse) {
 	var parsingErr *ParsingError
+	var jsonApiErr *apiError
 	if ok := errors.As(err, &parsingErr); ok {
 		// Handle parsing errors
-		_ = EncodeJSONResponse(err.Error(), func(i int) *int { return &i }(http.StatusBadRequest), w)
+		_ = EncodeJSONResponse(jsonApiErr.wrapJson(http.StatusBadRequest, err.Error(), nil), func(i int) *int { return &i }(http.StatusBadRequest), w)
 		return
 	}
 
 	var requiredErr *RequiredError
 	if ok := errors.As(err, &requiredErr); ok {
 		// Handle missing required errors
-		_ = EncodeJSONResponse(err.Error(), func(i int) *int { return &i }(http.StatusUnprocessableEntity), w)
+		_ = EncodeJSONResponse(jsonApiErr.wrapJson(http.StatusUnprocessableEntity, err.Error(), nil), func(i int) *int { return &i }(http.StatusUnprocessableEntity), w)
 		return
 	} 
 
 	// Handle all other errors
-	_ = EncodeJSONResponse(err.Error(), &result.Code, w)
+	_ = EncodeJSONResponse(jsonApiErr.wrapJson(result.Code, err.Error(), nil), &result.Code, w)
+}
+
+func ApiErrorResponse(status int, err error, data interface{}) (ImplResponse, error) {
+	var jsonApiErr *apiError
+	return Response(status, jsonApiErr.wrapJson(status, err.Error(), data)), nil
 }
