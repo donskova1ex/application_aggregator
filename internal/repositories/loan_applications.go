@@ -103,20 +103,17 @@ func (repo *PostgresRepository) UpdateLoanApplication(ctx context.Context, uuid 
 	if !tools.ValidUUID(loanApplication.IncomingOrganizationUuid) {
 		return nil, fmt.Errorf("invalid incoming organization uuid: %w", internal.ErrIssueOrganizationUUID)
 	}
-	_, err := repo.GetLoanApplicationsByUUID(ctx, uuid)
-	if err != nil {
-		return nil, fmt.Errorf(`loan application not found: %w`, internal.ErrRecordNotFound)
-	}
 
 	query := `UPDATE loan_applications
 					SET 
 						issue_organization_uuid = $1,
 						updated_at = NOW()
-					FROM 
-						organizations
 					WHERE 
-						loan_applications.uuid = $2
-					RETURNING *`
+						uuid = $2
+					RETURNING 
+						uuid, phone, value, 
+						incoming_organization_uuid, issue_organization_uuid,
+						created_at, updated_at`
 
 	var changingLoanApplication *domain.LoanApplication
 	err = repo.db.GetContext(ctx, &changingLoanApplication, query, loanApplication.IssueOrganizationUuid, uuid)
